@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sticker Studio</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏷️</text></svg>">
+<style>
+:root{--bg:#f4f3ff;--fg:#17162b;--card:#ffffffcc;--bd:#e2e0f5;--ac:#4f46e5;--ac2:#db2777;--mut:#6b6990;--glow:#4f46e522;--sheet:#fff;--cell:#c7c3ee}
+@media(prefers-color-scheme:dark){:root{--bg:#0d0c1d;--fg:#eeedff;--card:#1a1932cc;--bd:#2f2d52;--ac:#8b85ff;--ac2:#f472b6;--mut:#9d9bc7;--glow:#8b85ff22;--sheet:#25234a;--cell:#4a4780}}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{background:var(--bg);color:var(--fg);font:15px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0);position:relative;overflow-x:hidden}
+body::before,body::after{content:"";position:fixed;z-index:-1;border-radius:50%;filter:blur(90px);opacity:.55;pointer-events:none}
+body::before{width:420px;height:420px;background:var(--ac);top:-120px;left:-100px;opacity:.28}
+body::after{width:380px;height:380px;background:var(--ac2);bottom:-120px;right:-80px;opacity:.22}
+.w{max-width:1180px;margin:0 auto;padding:0 20px}
+.hero{padding:34px 0 8px;text-align:center}
+.pill{display:inline-flex;gap:6px;align-items:center;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ac);background:var(--glow);border:1px solid var(--bd);padding:5px 12px;border-radius:99px}
+h1{font-size:clamp(32px,6vw,54px);line-height:1.05;margin:14px 0 10px;letter-spacing:-.03em;font-weight:800}
+h1 span{background:linear-gradient(100deg,var(--ac),var(--ac2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{color:var(--mut);max-width:560px;margin:0 auto;font-size:16px}
+.steps{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:18px 0 0;font-size:13px;color:var(--mut)}
+.steps b{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;font-size:11px;margin-right:6px}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:26px 0 20px}
+@media(max-width:760px){.tabs{grid-template-columns:1fr}}
+.tab{all:unset;box-sizing:border-box;cursor:pointer;display:flex;gap:14px;align-items:center;padding:14px;border-radius:18px;background:var(--card);border:1.5px solid var(--bd);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transition:transform .18s,box-shadow .18s,border-color .18s;position:relative}
+.tab:hover{transform:translateY(-3px);box-shadow:0 12px 28px var(--glow)}
+.tab:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.tab.on{border-color:transparent;background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(120deg,var(--ac),var(--ac2)) border-box;border:2px solid transparent;box-shadow:0 14px 34px var(--glow)}
+.tab.on::after{content:"Open";position:absolute;top:10px;right:12px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:linear-gradient(120deg,var(--ac),var(--ac2));padding:2px 8px;border-radius:99px}
+.mini{flex:none;width:52px;height:68px;border-radius:7px;background:var(--sheet);border:1px solid var(--bd);padding:5px;display:grid;gap:2px;box-shadow:0 3px 8px #0002}
+.mini i{background:var(--cell);border-radius:1.5px;opacity:.9}
+.tab.on .mini i{background:linear-gradient(135deg,var(--ac),var(--ac2));opacity:1}
+.tab h3{margin:0;font-size:16px;letter-spacing:-.01em}
+.tab p{margin:2px 0 0;font-size:12.5px;color:var(--mut);line-height:1.4}
+.chip{display:inline-block;margin-top:6px;font-size:11px;font-weight:600;color:var(--ac);background:var(--glow);padding:2px 8px;border-radius:99px}
+.win{border-radius:18px;border:1px solid var(--bd);background:var(--card);box-shadow:0 24px 60px #0000002e;overflow:hidden;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.top{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--bd);font-size:13px;color:var(--mut)}
+.dots{display:flex;gap:6px}.dots i{width:11px;height:11px;border-radius:50%;background:#ff5f57}.dots i:nth-child(2){background:#febc2e}.dots i:nth-child(3){background:#28c840}
+.top .t{flex:1;text-align:center;font-weight:600;color:var(--fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top a{margin-left:auto;color:var(--ac);font-weight:600;text-decoration:none;white-space:nowrap}
+.top a:hover{text-decoration:underline}
+.fr{height:min(1200px,calc(100vh - 80px));min-height:640px}
+iframe{width:100%;height:100%;border:0;display:none;background:transparent}
+iframe.on{display:block;animation:in .3s ease}
+@keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.tips{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:22px 0 8px}
+@media(max-width:760px){.tips{grid-template-columns:1fr}}
+.tip{padding:14px 16px;border-radius:14px;border:1px solid var(--bd);background:var(--card);font-size:13px;color:var(--mut)}
+.tip b{display:block;color:var(--fg);font-size:14px;margin-bottom:2px}
+footer{text-align:center;color:var(--mut);font-size:12px;padding:16px 0 26px}
+@media(max-width:760px){.top .t{display:none}.hero{padding-top:24px}.fr{height:auto;min-height:0}iframe.on{height:900px}}
+</style></head><body>
+<div class="w">
+<section class="hero">
+  <span class="pill">🏷️ Sticker Studio</span>
+  <h1>Print-ready stickers,<br><span>in seconds.</span></h1>
+  <p class="lead">Pick your pre-cut A4 sheet, enter text or barcodes, and download a print-ready PDF.</p>
+  <div class="steps"><span><b>1</b>Choose a sheet</span><span><b>2</b>Enter text / barcodes</span><span><b>3</b>Print the PDF</span></div>
+</section>
+
+<nav class="tabs" id="tabs">
+  <button class="tab on" data-i="0" data-c="5" data-r="13"><span class="mini"></span><span><h3>65 Sticker Maker</h3><p>Auto-number, list or same text</p><span class="chip">5 × 13 · 38.1 × 21.2 mm</span></span></button>
+  <button class="tab" data-i="1" data-c="5" data-r="13"><span class="mini"></span><span><h3>65 Pack + Barcode</h3><p>Text and barcode stickers</p><span class="chip">5 × 13 · barcode ready</span></span></button>
+  <button class="tab" data-i="2" data-c="4" data-r="21"><span class="mini"></span><span><h3>84 Sticker Maker</h3><p>Small labels, 1-2 lines of text</p><span class="chip">4 × 21 · 46 × 11.11 mm</span></span></button>
+</nav>
+
+<div class="win">
+  <div class="top"><div class="dots"><i></i><i></i><i></i></div><div class="t" id="ttl">65 Sticker Maker</div><a id="full" href="#">Full page ↗</a></div>
+  <div class="fr">
+    <iframe id="f0" title="65 Sticker Maker" data-doc="&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1, viewport-fit=cover&quot;&gt;
+&lt;title&gt;65 Sticker Maker&lt;/title&gt;
+&lt;style&gt;
+:root{--bg:#f6f5f2;--fg:#1c1c1a;--card:#fff;--bd:#d9d6cf;--ac:#1d4ed8;--mut:#6b6a66;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme=&quot;light&quot;]){--bg:#171716;--fg:#ece9e2;--card:#222220;--bd:#3a3a36;--ac:#6ea0ff;--mut:#9b988f}}
+:root[data-theme=&quot;dark&quot;]{--bg:#171716;--fg:#ece9e2;--card:#222220;--bd:#3a3a36;--ac:#6ea0ff;--mut:#9b988f}
+html,body{height:auto}body{margin:0;background:var(--bg);color:var(--fg);font:15px system-ui,Arial,sans-serif}
+.wrap{display:grid;grid-template-columns:minmax(290px,370px) 1fr;gap:16px;padding:16px;max-width:1100px;margin:auto}
+@media(max-width:760px){.wrap{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:14px}
+h1{font-size:19px;margin:0 0 10px}h2{font-size:14px;margin:14px 0 8px;color:var(--mut);text-transform:uppercase;letter-spacing:.04em}
+label{display:block;font-size:13px;color:var(--mut);margin-bottom:8px}
+input,textarea,select{width:100%;box-sizing:border-box;padding:7px 8px;border:1px solid var(--bd);border-radius:6px;background:var(--bg);color:var(--fg);font:inherit;margin-top:3px}
+textarea{min-height:110px;font-family:ui-monospace,monospace}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.chk{display:flex;gap:8px;align-items:center;color:var(--fg)}.chk input{width:auto;margin:0}
+button{padding:9px 14px;border-radius:7px;border:1px solid var(--bd);background:var(--card);color:var(--fg);font:inherit;cursor:pointer}
+button.p{background:var(--ac);color:#fff;border-color:var(--ac);font-weight:600}button:disabled{opacity:.5;cursor:default}
+.bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.prev{overflow-x:auto}svg{width:100%;max-width:520px;height:auto;display:block;margin:auto;background:#fff;border:1px solid var(--bd);box-shadow:0 2px 8px #0002}
+.note{font-size:12.5px;color:var(--mut);line-height:1.5}#msg{font-size:13px}
+details{margin-top:12px}summary{cursor:pointer;font-weight:600;font-size:14px}
+&lt;/style&gt;
+&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js&quot;&gt;&lt;/script&gt;
+&lt;/head&gt;&lt;body&gt;&lt;div class=&quot;wrap&quot;&gt;
+&lt;div class=&quot;card&quot;&gt;
+&lt;h1&gt;65 Sticker Maker&lt;/h1&gt;
+&lt;label&gt;Mode&lt;select id=&quot;mode&quot;&gt;&lt;option value=&quot;auto&quot;&gt;Auto-number (KD001, KD002...)&lt;/option&gt;&lt;option value=&quot;list&quot;&gt;Custom list (one sticker per line)&lt;/option&gt;&lt;option value=&quot;same&quot;&gt;Same text on all stickers&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;
+&lt;div id=&quot;sameBox&quot; style=&quot;display:none&quot;&gt;
+&lt;label&gt;Text (up to 6 lines, Enter for a new line)&lt;textarea id=&quot;s1&quot; placeholder=&quot;FRAGILE&amp;#10;Handle with care&quot;&gt;&lt;/textarea&gt;&lt;/label&gt;
+&lt;label&gt;How many (leave empty = fill whole sheet)&lt;input id=&quot;scount&quot; type=&quot;number&quot; min=&quot;1&quot; placeholder=&quot;whole sheet&quot;&gt;&lt;/label&gt;
+&lt;/div&gt;
+&lt;div id=&quot;autoBox&quot;&gt;
+&lt;div class=&quot;g2&quot;&gt;&lt;label&gt;Prefix&lt;input id=&quot;prefix&quot; value=&quot;KD&quot;&gt;&lt;/label&gt;&lt;label&gt;Start number&lt;input id=&quot;start&quot; type=&quot;number&quot; value=&quot;1&quot;&gt;&lt;/label&gt;&lt;/div&gt;
+&lt;div class=&quot;g2&quot;&gt;&lt;label&gt;Digits&lt;input id=&quot;digits&quot; type=&quot;number&quot; value=&quot;3&quot;&gt;&lt;/label&gt;&lt;label&gt;How many&lt;input id=&quot;count&quot; type=&quot;number&quot; value=&quot;65&quot;&gt;&lt;/label&gt;&lt;/div&gt;
+&lt;label&gt;Extra lines under the number (optional, up to 5, one per line)&lt;textarea id=&quot;line2&quot; style=&quot;min-height:70px&quot; placeholder=&quot;Shelf A&amp;#10;Row 2&quot;&gt;&lt;/textarea&gt;&lt;/label&gt;
+&lt;/div&gt;
+&lt;div id=&quot;listBox&quot; style=&quot;display:none&quot;&gt;&lt;label&gt;Text (use &lt;b&gt;|&lt;/b&gt; to split into up to 6 lines)&lt;textarea id=&quot;list&quot; placeholder=&quot;KD001&amp;#10;Ram Kumar | Ajmer&amp;#10;...&quot;&gt;&lt;/textarea&gt;&lt;/label&gt;&lt;/div&gt;
+&lt;div class=&quot;g2&quot;&gt;&lt;label&gt;Skip first N stickers&lt;input id=&quot;skip&quot; type=&quot;number&quot; value=&quot;0&quot; min=&quot;0&quot;&gt;&lt;/label&gt;&lt;label&gt;Max font (pt)&lt;input id=&quot;maxpt&quot; type=&quot;number&quot; step=&quot;0.5&quot;&gt;&lt;/label&gt;&lt;/div&gt;
+&lt;label class=&quot;chk&quot;&gt;&lt;input id=&quot;uni&quot; type=&quot;checkbox&quot; checked&gt; Same font size on all stickers&lt;/label&gt;
+&lt;label class=&quot;chk&quot;&gt;&lt;input id=&quot;border&quot; type=&quot;checkbox&quot; checked&gt; Print borders (for test print only)&lt;/label&gt;
+&lt;details&gt;&lt;summary&gt;Paper layout (mm)&lt;/summary&gt;
+&lt;div class=&quot;g3&quot; id=&quot;lay&quot; style=&quot;margin-top:8px&quot;&gt;&lt;/div&gt;
+&lt;p class=&quot;note&quot;&gt;Extra gap: after every N rows add this much more space (normally 0). Set 0 to turn off. X/Y shift moves everything to fix printer offset.&lt;/p&gt;
+&lt;button id=&quot;reset&quot;&gt;Reset layout&lt;/button&gt;&lt;/details&gt;
+&lt;/div&gt;
+&lt;div class=&quot;card&quot;&gt;
+&lt;div class=&quot;bar&quot;&gt;&lt;button class=&quot;p&quot; id=&quot;dl&quot;&gt;Download PDF&lt;/button&gt;&lt;button id=&quot;pp&quot;&gt;&amp;larr;&lt;/button&gt;&lt;span id=&quot;pg&quot;&gt;Page 1&lt;/span&gt;&lt;button id=&quot;pn&quot;&gt;&amp;rarr;&lt;/button&gt;&lt;span id=&quot;msg&quot;&gt;&lt;/span&gt;&lt;/div&gt;
+&lt;div id=&quot;warn&quot; class=&quot;note&quot; style=&quot;color:#d33;font-weight:600;margin-bottom:8px&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;prev&quot; id=&quot;prev&quot;&gt;&lt;/div&gt;
+&lt;p class=&quot;note&quot;&gt;Test first: tick &quot;Print borders&quot;, print on plain paper at 100% (Actual size, no &quot;fit to page&quot;), hold it against the sticker sheet in front of a light. Adjust X/Y shift or sizes until it lines up, then untick borders and print on the real sheet.&lt;/p&gt;
+&lt;/div&gt;&lt;/div&gt;
+&lt;script&gt;
+const $=id=&gt;document.getElementById(id);
+const D={cols:5,rows:13,sw:38.1,sh:21.2,left:5,top:10.7,hgap:2.4,vgap:0.08,bn:0,bx:0,ox:0,oy:0,pad:1.5,maxpt:30};
+const LB={cols:&#x27;Columns&#x27;,rows:&#x27;Rows&#x27;,sw:&#x27;Sticker W&#x27;,sh:&#x27;Sticker H&#x27;,left:&#x27;Left margin&#x27;,top:&#x27;Top margin&#x27;,hgap:&#x27;H gap&#x27;,vgap:&#x27;V gap&#x27;,bn:&#x27;Extra gap every N rows&#x27;,bx:&#x27;Extra gap&#x27;,ox:&#x27;X shift&#x27;,oy:&#x27;Y shift&#x27;,pad:&#x27;Side padding&#x27;};
+let S=Object.assign({},D);try{Object.assign(S,JSON.parse(localStorage.getItem(&#x27;sm4&#x27;)||&#x27;{}&#x27;))}catch(e){}
+$(&#x27;lay&#x27;).innerHTML=Object.keys(LB).map(k=&gt;`&lt;label&gt;${LB[k]}&lt;input id=&quot;f_${k}&quot; type=&quot;number&quot; step=&quot;0.1&quot;&gt;&lt;/label&gt;`).join(&#x27;&#x27;);
+const keys=Object.keys(D);
+function load(){keys.forEach(k=&gt;{const e=$(k===&#x27;maxpt&#x27;?&#x27;maxpt&#x27;:&#x27;f_&#x27;+k);if(e)e.value=S[k]})}
+load();
+let jp=null,cv=document.createElement(&#x27;canvas&#x27;).getContext(&#x27;2d&#x27;),page=0,dl=null;
+try{jp=new window.jspdf.jsPDF({unit:&#x27;mm&#x27;,format:&#x27;a4&#x27;})}catch(e){}
+if(window.claude&amp;&amp;claude.use)claude.use(&#x27;downloads&#x27;).then(d=&gt;{dl=d}).catch(()=&gt;{});
+const K=0.3528*0.716;
+function w1(t){if(jp){jp.setFont(&#x27;helvetica&#x27;,&#x27;bold&#x27;);jp.setFontSize(100);return jp.getTextWidth(t)/100}cv.font=&#x27;bold 100px Arial&#x27;;return cv.measureText(t).width/100*0.3528}
+function read(){keys.forEach(k=&gt;{const e=$(k===&#x27;maxpt&#x27;?&#x27;maxpt&#x27;:&#x27;f_&#x27;+k);const v=parseFloat(e.value);if(!isNaN(v))S[k]=v});try{localStorage.setItem(&#x27;sm4&#x27;,JSON.stringify(S))}catch(e){}}
+function items(){
+ let a=[];const skip=Math.max(0,parseInt($(&#x27;skip&#x27;).value)||0);
+ if($(&#x27;mode&#x27;).value===&#x27;same&#x27;){const ls=$(&#x27;s1&#x27;).value.split(&#x27;\n&#x27;).map(x=&gt;x.trim()).filter(Boolean).slice(0,6),c=parseInt($(&#x27;scount&#x27;).value);
+  const n=c&gt;0?c:Math.max(0,S.cols*S.rows-skip);if(ls.length)for(let i=0;i&lt;n;i++)a.push(ls);}
+ else if($(&#x27;mode&#x27;).value===&#x27;auto&#x27;){const n=Math.max(0,parseInt($(&#x27;count&#x27;).value)||0),st=parseInt($(&#x27;start&#x27;).value)||0,d=parseInt($(&#x27;digits&#x27;).value)||0,l2=$(&#x27;line2&#x27;).value.split(&#x27;\n&#x27;).map(x=&gt;x.trim()).filter(Boolean).slice(0,5);
+  for(let i=0;i&lt;n;i++)a.push([$(&#x27;prefix&#x27;).value+String(st+i).padStart(d,&#x27;0&#x27;),...l2]);}
+ else a=$(&#x27;list&#x27;).value.split(&#x27;\n&#x27;).map(l=&gt;l.split(&#x27;|&#x27;).map(x=&gt;x.trim()).filter(Boolean).slice(0,6)).filter(x=&gt;x.length);
+ return Array(skip).fill(null).concat(a);
+}
+function size(it){if(!it)return 0;const ls=it.filter(Boolean);let s=S.maxpt;const aw=S.sw-2*S.pad;
+ ls.forEach(t=&gt;{s=Math.min(s,aw/w1(t))});s=Math.min(s,(S.sh-1.8)/(K*(1+1.55*Math.max(0,ls.length-1))));return s}
+function pos(i){const c=i%S.cols,r=Math.floor(i/S.cols);return[S.left+S.ox+c*(S.sw+S.hgap),S.top+S.oy+r*(S.sh+S.vgap)+(S.bn&gt;0?Math.floor(r/S.bn)*S.bx:0)]}
+function layout(){const a=items(),per=S.cols*S.rows;let sz=a.map(size);
+ if($(&#x27;uni&#x27;).checked){const m=Math.min(...sz.filter(x=&gt;x&gt;0),S.maxpt);sz=sz.map(x=&gt;x&gt;0?m:0)}
+ return{a,sz,per,pages:Math.max(1,Math.ceil(a.length/per))}}
+function lines(it,s,y){const ls=it.filter(Boolean),cap=K*s,cy=y+S.sh/2,d=1.55*cap,n=ls.length;return ls.map((t,i)=&gt;[t,cy+(i-(n-1)/2)*d+cap/2])}
+const esc=t=&gt;t.replace(/&amp;/g,&#x27;&amp;amp;&#x27;).replace(/&lt;/g,&#x27;&amp;lt;&#x27;);
+function render(){read();const L=layout();page=Math.min(page,L.pages-1);
+ let o=`&lt;svg viewBox=&quot;0 0 210 297&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;`;
+ for(let j=0;j&lt;L.per;j++){const i=page*L.per+j;if(i&gt;=L.a.length)break;const it=L.a[i];if(!it)continue;const[x,y]=pos(j);
+  const out=x+S.sw&gt;210.01||y+S.sh&gt;297.01;
+  if(out)o+=`&lt;rect x=&quot;${x}&quot; y=&quot;${y}&quot; width=&quot;${S.sw}&quot; height=&quot;${S.sh}&quot; fill=&quot;#f003&quot; stroke=&quot;#d00&quot; stroke-width=&quot;.3&quot;/&gt;`;
+  else if($(&#x27;border&#x27;).checked)o+=`&lt;rect x=&quot;${x}&quot; y=&quot;${y}&quot; width=&quot;${S.sw}&quot; height=&quot;${S.sh}&quot; fill=&quot;none&quot; stroke=&quot;#000&quot; stroke-width=&quot;.15&quot;/&gt;`;
+  else o+=`&lt;rect x=&quot;${x}&quot; y=&quot;${y}&quot; width=&quot;${S.sw}&quot; height=&quot;${S.sh}&quot; fill=&quot;none&quot; stroke=&quot;#bbb&quot; stroke-width=&quot;.1&quot; stroke-dasharray=&quot;.6 .6&quot;/&gt;`;
+  lines(it,L.sz[i],y).forEach(([t,by])=&gt;{o+=`&lt;text x=&quot;${x+S.sw/2}&quot; y=&quot;${by}&quot; font-size=&quot;${L.sz[i]*0.3528}&quot; text-anchor=&quot;middle&quot; font-family=&quot;Helvetica,Arial,sans-serif&quot; font-weight=&quot;700&quot; fill=&quot;#000&quot;&gt;${esc(t)}&lt;/text&gt;`})}
+ $(&#x27;prev&#x27;).innerHTML=o+&#x27;&lt;/svg&gt;&#x27;;
+ {const rt=S.left+S.ox+S.cols*S.sw+(S.cols-1)*S.hgap,bt=S.top+S.oy+S.rows*S.sh+(S.rows-1)*S.vgap+(S.bn&gt;0?Math.floor((S.rows-1)/S.bn)*S.bx:0);
+  const fc=Math.max(0,Math.floor((210-S.left-S.ox+S.hgap)/(S.sw+S.hgap))),fr=Math.max(0,Math.floor((297-S.top-S.oy+S.vgap)/(S.sh+S.vgap)));
+  $(&#x27;warn&#x27;).textContent=(rt&gt;210.01||bt&gt;297.01)?`Layout goes outside A4: right edge at ${rt.toFixed(1)} mm (page 210), bottom at ${bt.toFixed(1)} mm (page 297). Only ${fc} columns x ${fr} rows fit. Red stickers get cut off. Re-check the measurements.`:&#x27;&#x27;;}$(&#x27;pg&#x27;).textContent=`Page ${page+1} of ${L.pages}`;
+ $(&#x27;pp&#x27;).disabled=page==0;$(&#x27;pn&#x27;).disabled=page&gt;=L.pages-1;$(&#x27;dl&#x27;).disabled=!jp}
+$(&#x27;dl&#x27;).onclick=async()=&gt;{read();const L=layout();if(!jp)return;
+ const d=new window.jspdf.jsPDF({unit:&#x27;mm&#x27;,format:&#x27;a4&#x27;});d.setFont(&#x27;helvetica&#x27;,&#x27;bold&#x27;);
+ for(let p=0;p&lt;L.pages;p++){if(p)d.addPage();
+  for(let j=0;j&lt;L.per;j++){const i=p*L.per+j;if(i&gt;=L.a.length)break;const it=L.a[i];if(!it)continue;const[x,y]=pos(j);
+   if($(&#x27;border&#x27;).checked){d.setLineWidth(.15);d.setDrawColor(0);d.rect(x,y,S.sw,S.sh,&#x27;S&#x27;)}
+   d.setFontSize(L.sz[i]);d.setTextColor(0);lines(it,L.sz[i],y).forEach(([t,by])=&gt;d.text(t,x+S.sw/2,by,{align:&#x27;center&#x27;}))}}
+ const msg=$(&#x27;msg&#x27;);
+ if(!dl){try{const u=URL.createObjectURL(d.output(&#x27;blob&#x27;)),a=document.createElement(&#x27;a&#x27;);a.href=u;a.download=&#x27;stickers.pdf&#x27;;document.body.appendChild(a);a.click();a.remove();msg.textContent=&#x27;Saved.&#x27;}catch(e){msg.textContent=&#x27;Could not save.&#x27;}return}
+ try{await dl.save({filename:&#x27;stickers.pdf&#x27;,data:d.output(&#x27;blob&#x27;)});msg.textContent=&#x27;Saved.&#x27;}catch(e){msg.textContent=e&amp;&amp;e.code===&#x27;declined&#x27;?&#x27;Cancelled.&#x27;:&#x27;Could not save (&#x27;+(e&amp;&amp;e.code||&#x27;error&#x27;)+&#x27;).&#x27;}};
+$(&#x27;pp&#x27;).onclick=()=&gt;{page--;render()};$(&#x27;pn&#x27;).onclick=()=&gt;{page++;render()};
+$(&#x27;mode&#x27;).onchange=()=&gt;{$(&#x27;sameBox&#x27;).style.display=$(&#x27;mode&#x27;).value===&#x27;same&#x27;?&#x27;&#x27;:&#x27;none&#x27;;$(&#x27;autoBox&#x27;).style.display=$(&#x27;mode&#x27;).value===&#x27;auto&#x27;?&#x27;&#x27;:&#x27;none&#x27;;$(&#x27;listBox&#x27;).style.display=$(&#x27;mode&#x27;).value===&#x27;list&#x27;?&#x27;&#x27;:&#x27;none&#x27;;page=0;render()};
+$(&#x27;reset&#x27;).onclick=()=&gt;{S=Object.assign({},D);load();render()};
+document.querySelectorAll(&#x27;input,textarea&#x27;).forEach(e=&gt;e.addEventListener(&#x27;input&#x27;,render));
+render();
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;
+"></iframe>
+    <iframe id="f1" title="65 Sticker Pack Including Barcode" data-doc="&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1, viewport-fit=cover&quot;&gt;
+&lt;title&gt;65 Sticker Pack Including Barcode&lt;/title&gt;
+&lt;style&gt;
+:root{--bg:#f6f5f2;--fg:#1c1c1a;--card:#fff;--bd:#d9d6cf;--ac:#1d4ed8;--mut:#6b6a66;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme=&quot;light&quot;]){--bg:#171716;--fg:#ece9e2;--card:#222220;--bd:#3a3a36;--ac:#6ea0ff;--mut:#9b988f}}
+:root[data-theme=&quot;dark&quot;]{--bg:#171716;--fg:#ece9e2;--card:#222220;--bd:#3a3a36;--ac:#6ea0ff;--mut:#9b988f}
+html,body{height:auto}body{margin:0;background:var(--bg);color:var(--fg);font:15px system-ui,Arial,sans-serif}
+.wrap{display:grid;grid-template-columns:minmax(290px,370px) 1fr;gap:16px;padding:16px;max-width:1100px;margin:auto}
+@media(max-width:760px){.wrap{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:14px}
+h1{font-size:19px;margin:0 0 10px}h2{font-size:14px;margin:14px 0 8px;color:var(--mut);text-transform:uppercase;letter-spacing:.04em}
+label{display:block;font-size:13px;color:var(--mut);margin-bottom:8px}
+input,textarea,select{width:100%;box-sizing:border-box;padding:7px 8px;border:1px solid var(--bd);border-radius:6px;background:var(--bg);color:var(--fg);font:inherit;margin-top:3px}
+textarea{min-height:110px;font-family:ui-monospace,monospace}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.chk{display:flex;gap:8px;align-items:center;color:var(--fg)}.chk input{width:auto;margin:0}
+button{padding:9px 14px;border-radius:7px;border:1px solid var(--bd);background:var(--card);color:var(--fg);font:inherit;cursor:pointer}
+button.p{background:var(--ac);color:#fff;border-color:var(--ac);font-weight:600}button:disabled{opacity:.5;cursor:default}
+.bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.prev{overflow-x:auto}svg{width:100%;max-width:520px;height:auto;display:block;margin:auto;background:#fff;border:1px solid var(--bd);box-shadow:0 2px 8px #0002}
+.note{font-size:12.5px;color:var(--mut);line-height:1.5}#msg{font-size:13px}
+details{margin-top:12px}summary{cursor:pointer;font-weight:600;font-size:14px}
+.sty{border:1px solid var(--bd);border-radius:8px;padding:10px 10px 2px;margin-bottom:10px}
+.sty b{display:block;font-size:13px;margin-bottom:8px;color:var(--ac)}
+&lt;/style&gt;
+&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js&quot;&gt;&lt;/script&gt;
+&lt;/head&gt;&lt;body&gt;&lt;div class=&quot;wrap&quot;&gt;
+&lt;div class=&quot;card&quot;&gt;
+&lt;h1&gt;65 Sticker Pack Including Barcode&lt;/h1&gt;
+&lt;label&gt;Mode&lt;select id=&quot;mode&quot;&gt;&lt;option value=&quot;auto&quot;&gt;Auto-number (KD001, KD002...)&lt;/option&gt;&lt;option value=&quot;list&quot;&gt;Custom list (one sticker per line)&lt;/option&gt;&lt;option value=&quot;same&quot;&gt;Same text on all stickers&lt;/option&gt;&lt;option value=&quot;barcode&quot;&gt;Barcode stickers (2 styles)&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;
+&lt;div id=&quot;sameBox&quot; style=&quot;display:none&quot;&gt;
+&lt;label&gt;Text (up to 6 lines, Enter for a new line)&lt;textarea id=&quot;s1&quot; placeholder=&quot;FRAGILE&amp;#10;Handle with care&quot;&gt;&lt;/textarea&gt;&lt;/label&gt;
+&lt;label&gt;How many (leave empty = fill whole sheet)&lt;input id=&quot;scount&quot; type=&quot;number&quot; min=&quot;1&quot; placeholder=&quot;whole sheet&quot;&gt;&lt;/label&gt;
+&lt;/div&gt;
+&lt;div id=&quot;autoBox&quot;&gt;
+&lt;div class=&quot;g2&quot;&gt;&lt;label&gt;Prefix&lt;input id=&quot;prefix&quot; value=&quot;KD&quot;&gt;&lt;/label&gt;&lt;label&gt;Start number&lt;input id=&quot;start&quot; type=&quot;number&quot; value=&quot;1&quot;&gt;&lt;/label&gt;&lt;/div&gt;
+&lt;div class=&quot;g2&quot;&gt;&lt;label&gt;Digits&lt;input id=&quot;digits&quot; type=&quot;number&quot; value=&quot;3&quot;&gt;&lt;/label&gt;&lt;label&gt;How many&lt;input id=&quot;count&quot; type=&quot;number&quot; value=&quot;65&quot;&gt;&lt;/label&gt;&lt;/div&gt;
+&lt;label&gt;Extra lines under the number (optional, up to 5, one per line)&lt;textarea id=&quot;line2&quot; style=&quot;min-height:70px&quot; placeholder=&quot;Shelf A&amp;#10;Row 2&quot;&gt;&lt;/textarea&gt;&lt;/label&gt;
+&lt;/div&gt;
+&lt;div id=&quot;listBox&quot; style=&quot;display:none&quot;&gt;&lt;label&gt;Text (use &lt;b&gt;|&lt;/b&gt; to split into up to 6 lines)&lt;textarea id=&quot;list&quot; placeholder=&quot;KD001&amp;#10;Ram Kumar | Ajmer&amp;#10;...&quot;&gt;&lt;/textarea&gt;&lt;/label&gt;&lt;/div&gt;
+&lt;div id=&quot;barBox&quot; style=&quot;display:none&quot;&gt;
+&lt;div class=&quot;sty&quot;&gt;&lt;b&gt;Style A&lt;/b&gt;
+&lt;div class=&quot;g2&quot;&gt;&lt;label&gt;Line 1&lt;input id=&quot;A_1&quot; value=&quot;24001&quot;&gt;&lt;/label&gt;&lt;label&gt;Line 2&lt;input id=&quot;A_2&quot; value=&quot;L&quot;&gt;&lt;/label&gt;&lt;/div&gt;
+&lt;div class=&quot;g2&quot;&gt;&lt;label&gt;Line 3 (small)&lt;input id=&quot;A_3&quot; value=&quot;ESTAMP A&quot;&gt;&lt;/label&gt;&lt;label&gt;How many&lt;input id=&quot;A_n&quot; type=&quot;number&quot; min=&quot;0&quot; value=&quot;5&quot;&gt;&lt;/label&gt;&lt;/div&gt;
+&lt;label&gt;Barcode number&lt;input id=&quot;A_c&quot; value=&quot;233820202846&quot;&gt;&lt;/label&gt;&lt;/div&gt;
+&lt;div class=&quot;sty&quot;&gt;&lt;b&gt;Style B&lt;/b&gt;
+&lt;div class=&quot;g2&quot;&gt;&lt;label&gt;Line 1&lt;input id=&quot;B_1&quot; value=&quot;24002&quot;&gt;&lt;/label&gt;&lt;label&gt;Line 2&lt;input id=&quot;B_2&quot; value=&quot;M&quot;&gt;&lt;/label&gt;&lt;/div&gt;
+&lt;div class=&quot;g2&quot;&gt;&lt;label&gt;Line 3 (small)&lt;input id=&quot;B_3&quot; value=&quot;ESTAMP B&quot;&gt;&lt;/label&gt;&lt;label&gt;How many&lt;input id=&quot;B_n&quot; type=&quot;number&quot; min=&quot;0&quot; value=&quot;5&quot;&gt;&lt;/label&gt;&lt;/div&gt;
+&lt;label&gt;Barcode number&lt;input id=&quot;B_c&quot; value=&quot;233820202853&quot;&gt;&lt;/label&gt;&lt;/div&gt;
+&lt;label class=&quot;chk&quot;&gt;&lt;input id=&quot;newrow&quot; type=&quot;checkbox&quot; checked&gt; Start Style B on a new row&lt;/label&gt;
+&lt;label class=&quot;chk&quot;&gt;&lt;input id=&quot;shownum&quot; type=&quot;checkbox&quot; checked&gt; Print number under barcode&lt;/label&gt;
+&lt;label class=&quot;chk&quot;&gt;&lt;input id=&quot;bold&quot; type=&quot;checkbox&quot;&gt; Bold text lines&lt;/label&gt;
+&lt;details&gt;&lt;summary&gt;Barcode layout&lt;/summary&gt;
+&lt;div class=&quot;g2&quot; id=&quot;blay&quot; style=&quot;margin-top:8px&quot;&gt;&lt;/div&gt;
+&lt;p class=&quot;note&quot;&gt;Barcode is Code 128 (same as common retail/stock labels). Barcode height adjusts automatically to the space left after the text lines.&lt;/p&gt;&lt;/details&gt;
+&lt;/div&gt;
+&lt;div class=&quot;g2&quot;&gt;&lt;label&gt;Skip first N stickers&lt;input id=&quot;skip&quot; type=&quot;number&quot; value=&quot;0&quot; min=&quot;0&quot;&gt;&lt;/label&gt;&lt;label&gt;Max font (pt)&lt;input id=&quot;maxpt&quot; type=&quot;number&quot; step=&quot;0.5&quot;&gt;&lt;/label&gt;&lt;/div&gt;
+&lt;label class=&quot;chk&quot;&gt;&lt;input id=&quot;uni&quot; type=&quot;checkbox&quot; checked&gt; Same font size on all stickers&lt;/label&gt;
+&lt;label class=&quot;chk&quot;&gt;&lt;input id=&quot;border&quot; type=&quot;checkbox&quot; checked&gt; Print borders (for test print only)&lt;/label&gt;
+&lt;details&gt;&lt;summary&gt;Paper layout (mm)&lt;/summary&gt;
+&lt;div class=&quot;g3&quot; id=&quot;lay&quot; style=&quot;margin-top:8px&quot;&gt;&lt;/div&gt;
+&lt;p class=&quot;note&quot;&gt;Extra gap: after every N rows add this much more space (normally 0). Set 0 to turn off. X/Y shift moves everything to fix printer offset.&lt;/p&gt;
+&lt;button id=&quot;reset&quot;&gt;Reset layout&lt;/button&gt;&lt;/details&gt;
+&lt;/div&gt;
+&lt;div class=&quot;card&quot;&gt;
+&lt;div class=&quot;bar&quot;&gt;&lt;button class=&quot;p&quot; id=&quot;dl&quot;&gt;Download PDF&lt;/button&gt;&lt;button id=&quot;pp&quot;&gt;&amp;larr;&lt;/button&gt;&lt;span id=&quot;pg&quot;&gt;Page 1&lt;/span&gt;&lt;button id=&quot;pn&quot;&gt;&amp;rarr;&lt;/button&gt;&lt;span id=&quot;msg&quot;&gt;&lt;/span&gt;&lt;/div&gt;
+&lt;div id=&quot;warn&quot; class=&quot;note&quot; style=&quot;color:#d33;font-weight:600;margin-bottom:8px&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;prev&quot; id=&quot;prev&quot;&gt;&lt;/div&gt;
+&lt;p class=&quot;note&quot;&gt;Test first: tick &quot;Print borders&quot;, print on plain paper at 100% (Actual size, no &quot;fit to page&quot;), hold it against the sticker sheet in front of a light. Adjust X/Y shift or sizes until it lines up, then untick borders and print on the real sheet.&lt;/p&gt;
+&lt;/div&gt;&lt;/div&gt;
+&lt;script&gt;
+const $=id=&gt;document.getElementById(id);
+const D={cols:5,rows:13,sw:38.1,sh:21.2,left:5,top:10.7,hgap:2.4,vgap:0.08,bn:0,bx:0,ox:0,oy:0,pad:1.5,maxpt:30,btop:1.2,bpad:2.5,bigpt:9,smallpt:6.5,numpt:8.5};
+const LB={cols:&#x27;Columns&#x27;,rows:&#x27;Rows&#x27;,sw:&#x27;Sticker W&#x27;,sh:&#x27;Sticker H&#x27;,left:&#x27;Left margin&#x27;,top:&#x27;Top margin&#x27;,hgap:&#x27;H gap&#x27;,vgap:&#x27;V gap&#x27;,bn:&#x27;Extra gap every N rows&#x27;,bx:&#x27;Extra gap&#x27;,ox:&#x27;X shift&#x27;,oy:&#x27;Y shift&#x27;,pad:&#x27;Side padding&#x27;};
+const BL={btop:&#x27;Top space&#x27;,bpad:&#x27;Barcode side space&#x27;,bigpt:&#x27;Lines 1-2 size (pt)&#x27;,smallpt:&#x27;Line 3 size (pt)&#x27;,numpt:&#x27;Number size (pt)&#x27;};
+let S=Object.assign({},D);try{Object.assign(S,JSON.parse(localStorage.getItem(&#x27;sm4&#x27;)||&#x27;{}&#x27;))}catch(e){}
+$(&#x27;lay&#x27;).innerHTML=Object.keys(LB).map(k=&gt;`&lt;label&gt;${LB[k]}&lt;input id=&quot;f_${k}&quot; type=&quot;number&quot; step=&quot;0.1&quot;&gt;&lt;/label&gt;`).join(&#x27;&#x27;);
+$(&#x27;blay&#x27;).innerHTML=Object.keys(BL).map(k=&gt;`&lt;label&gt;${BL[k]}&lt;input id=&quot;f_${k}&quot; type=&quot;number&quot; step=&quot;0.1&quot;&gt;&lt;/label&gt;`).join(&#x27;&#x27;);
+const keys=Object.keys(D);
+function load(){keys.forEach(k=&gt;{const e=$(k===&#x27;maxpt&#x27;?&#x27;maxpt&#x27;:&#x27;f_&#x27;+k);if(e)e.value=S[k]})}
+load();
+let jp=null,cv=document.createElement(&#x27;canvas&#x27;).getContext(&#x27;2d&#x27;),page=0,dl=null;
+try{jp=new window.jspdf.jsPDF({unit:&#x27;mm&#x27;,format:&#x27;a4&#x27;})}catch(e){}
+if(window.claude&amp;&amp;claude.use)claude.use(&#x27;downloads&#x27;).then(d=&gt;{dl=d}).catch(()=&gt;{});
+const K=0.3528*0.716;
+function w1(t){if(jp){jp.setFont(&#x27;helvetica&#x27;,&#x27;bold&#x27;);jp.setFontSize(100);return jp.getTextWidth(t)/100}cv.font=&#x27;bold 100px Arial&#x27;;return cv.measureText(t).width/100*0.3528}
+function tw(t,f,st){if(jp){jp.setFont(f,st);jp.setFontSize(100);return jp.getTextWidth(t)/100}cv.font=(st===&#x27;bold&#x27;?&#x27;bold &#x27;:&#x27;&#x27;)+&#x27;100px &#x27;+(f===&#x27;times&#x27;?&#x27;&quot;Times New Roman&quot;,serif&#x27;:&#x27;Arial&#x27;);return cv.measureText(t).width/100*0.3528}
+/* ---- Code 128 ---- */
+const P=(&quot;212222 222122 222221 121223 121322 131222 122213 122312 132212 221213 221312 231212 112232 122132 122231 113222 123122 123221 223211 221132 221231 213212 223112 312131 311222 321122 321221 312212 322112 322211 212123 212321 232121 111323 131123 131321 112313 132113 132311 211313 231113 231311 112133 112331 132131 113123 113321 133121 313121 211331 231131 213113 213311 213131 311123 311321 331121 312113 312311 332111 314111 221411 431111 111224 111422 121124 121421 141122 141221 112214 112412 122114 122411 142112 142211 241211 221114 413111 241112 134111 111242 121142 121241 114212 124112 124211 411212 421112 421211 212141 214121 412121 111143 111341 131141 114113 114311 411113 411311 113141 114131 311141 411131 211412 211214 211232 2331112&quot;).split(&#x27; &#x27;);
+function c128(s){const v=[];
+ if(/^\d+$/.test(s)&amp;&amp;s.length&gt;=4){let i=0;if(s.length%2){v.push(104,s.charCodeAt(0)-32,99);i=1}else v.push(105);for(;i&lt;s.length;i+=2)v.push(parseInt(s.substr(i,2),10))}
+ else{v.push(104);for(const ch of s){let c=ch.charCodeAt(0)-32;if(c&lt;0||c&gt;94)c=31;v.push(c)}}
+ let sum=v[0];for(let i=1;i&lt;v.length;i++)sum+=v[i]*i;v.push(sum%103);v.push(106);
+ return v.map(x=&gt;P[x]).join(&#x27;&#x27;)}
+function bcModel(it,x,y){
+ const aw=S.sw-2*S.pad,cx=x+S.sw/2,st=$(&#x27;bold&#x27;).checked?&#x27;bold&#x27;:&#x27;normal&#x27;,T=[],bars=[];let cy=S.btop,bh=0;
+ it.l.forEach((t,i)=&gt;{if(!t)return;const base=i&lt;2?S.bigpt:S.smallpt,pt=Math.min(base,aw/tw(t,&#x27;helvetica&#x27;,st)),cap=K*pt;
+  T.push({t,x:cx,y:y+cy+cap,pt,f:&#x27;helvetica&#x27;,st});cy+=cap+(i&lt;2?1.0:0.8)});
+ if(it.code){let bot=S.sh-1.2;
+  if($(&#x27;shownum&#x27;).checked){const pt=Math.min(S.numpt,aw/tw(it.code,&#x27;times&#x27;,&#x27;bold&#x27;)),cap=K*pt;
+   T.push({t:it.code,x:cx,y:y+S.sh-1.3,pt,f:&#x27;times&#x27;,st:&#x27;bold&#x27;});bot=S.sh-1.3-cap-0.7}
+  const top=cy+0.2;bh=bot-top;
+  const pat=c128(it.code),mod=[...pat].reduce((a,c)=&gt;a+(+c),0),m=(S.sw-2*S.bpad)/mod;
+  let px=x+S.bpad,isBar=true;
+  for(const c of pat){const w=(+c)*m;if(isBar&amp;&amp;bh&gt;0)bars.push([px,y+top,w,bh]);px+=w;isBar=!isBar}}
+ return{T,bars,bh}}
+function read(){keys.forEach(k=&gt;{const e=$(k===&#x27;maxpt&#x27;?&#x27;maxpt&#x27;:&#x27;f_&#x27;+k);const v=parseFloat(e.value);if(!isNaN(v))S[k]=v});try{localStorage.setItem(&#x27;sm4&#x27;,JSON.stringify(S))}catch(e){}}
+function items(){
+ let a=[];const skip=Math.max(0,parseInt($(&#x27;skip&#x27;).value)||0);
+ if($(&#x27;mode&#x27;).value===&#x27;same&#x27;){const ls=$(&#x27;s1&#x27;).value.split(&#x27;\n&#x27;).map(x=&gt;x.trim()).filter(Boolean).slice(0,6),c=parseInt($(&#x27;scount&#x27;).value);
+  const n=c&gt;0?c:Math.max(0,S.cols*S.rows-skip);if(ls.length)for(let i=0;i&lt;n;i++)a.push(ls);}
+ else if($(&#x27;mode&#x27;).value===&#x27;auto&#x27;){const n=Math.max(0,parseInt($(&#x27;count&#x27;).value)||0),st=parseInt($(&#x27;start&#x27;).value)||0,d=parseInt($(&#x27;digits&#x27;).value)||0,l2=$(&#x27;line2&#x27;).value.split(&#x27;\n&#x27;).map(x=&gt;x.trim()).filter(Boolean).slice(0,5);
+  for(let i=0;i&lt;n;i++)a.push([$(&#x27;prefix&#x27;).value+String(st+i).padStart(d,&#x27;0&#x27;),...l2]);}
+ else if($(&#x27;mode&#x27;).value===&#x27;barcode&#x27;){
+  const mk=p=&gt;{const n=Math.max(0,parseInt($(p+&#x27;_n&#x27;).value)||0),o={bc:1,l:[$(p+&#x27;_1&#x27;).value.trim(),$(p+&#x27;_2&#x27;).value.trim(),$(p+&#x27;_3&#x27;).value.trim()],code:$(p+&#x27;_c&#x27;).value.trim()};return Array(n).fill(o)};
+  const A=mk(&#x27;A&#x27;),B=mk(&#x27;B&#x27;);a=A;
+  if($(&#x27;newrow&#x27;).checked&amp;&amp;A.length&amp;&amp;B.length){const pad=(S.cols-(skip+A.length)%S.cols)%S.cols;a=a.concat(Array(pad).fill(null))}
+  a=a.concat(B);}
+ else a=$(&#x27;list&#x27;).value.split(&#x27;\n&#x27;).map(l=&gt;l.split(&#x27;|&#x27;).map(x=&gt;x.trim()).filter(Boolean).slice(0,6)).filter(x=&gt;x.length);
+ return Array(skip).fill(null).concat(a);
+}
+function size(it){if(!it)return 0;if(it.bc)return S.maxpt;const ls=it.filter(Boolean);let s=S.maxpt;const aw=S.sw-2*S.pad;
+ ls.forEach(t=&gt;{s=Math.min(s,aw/w1(t))});s=Math.min(s,(S.sh-1.8)/(K*(1+1.55*Math.max(0,ls.length-1))));return s}
+function pos(i){const c=i%S.cols,r=Math.floor(i/S.cols);return[S.left+S.ox+c*(S.sw+S.hgap),S.top+S.oy+r*(S.sh+S.vgap)+(S.bn&gt;0?Math.floor(r/S.bn)*S.bx:0)]}
+function layout(){const a=items(),per=S.cols*S.rows;let sz=a.map(size);
+ if($(&#x27;uni&#x27;).checked){const m=Math.min(...sz.filter(x=&gt;x&gt;0),S.maxpt);sz=sz.map(x=&gt;x&gt;0?m:0)}
+ return{a,sz,per,pages:Math.max(1,Math.ceil(a.length/per))}}
+function lines(it,s,y){const ls=it.filter(Boolean),cap=K*s,cy=y+S.sh/2,d=1.55*cap,n=ls.length;return ls.map((t,i)=&gt;[t,cy+(i-(n-1)/2)*d+cap/2])}
+const esc=t=&gt;t.replace(/&amp;/g,&#x27;&amp;amp;&#x27;).replace(/&lt;/g,&#x27;&amp;lt;&#x27;);
+function render(){read();const L=layout();page=Math.min(page,L.pages-1);
+ let o=`&lt;svg viewBox=&quot;0 0 210 297&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;`;
+ for(let j=0;j&lt;L.per;j++){const i=page*L.per+j;if(i&gt;=L.a.length)break;const it=L.a[i];if(!it)continue;const[x,y]=pos(j);
+  const out=x+S.sw&gt;210.01||y+S.sh&gt;297.01;
+  if(out)o+=`&lt;rect x=&quot;${x}&quot; y=&quot;${y}&quot; width=&quot;${S.sw}&quot; height=&quot;${S.sh}&quot; fill=&quot;#f003&quot; stroke=&quot;#d00&quot; stroke-width=&quot;.3&quot;/&gt;`;
+  else if($(&#x27;border&#x27;).checked)o+=`&lt;rect x=&quot;${x}&quot; y=&quot;${y}&quot; width=&quot;${S.sw}&quot; height=&quot;${S.sh}&quot; fill=&quot;none&quot; stroke=&quot;#000&quot; stroke-width=&quot;.15&quot;/&gt;`;
+  else o+=`&lt;rect x=&quot;${x}&quot; y=&quot;${y}&quot; width=&quot;${S.sw}&quot; height=&quot;${S.sh}&quot; fill=&quot;none&quot; stroke=&quot;#bbb&quot; stroke-width=&quot;.1&quot; stroke-dasharray=&quot;.6 .6&quot;/&gt;`;
+  if(it.bc){const M=bcModel(it,x,y);
+   if(M.bars.length)o+=`&lt;path fill=&quot;#000&quot; d=&quot;${M.bars.map(b=&gt;`M${b[0].toFixed(3)} ${b[1].toFixed(3)}h${b[2].toFixed(3)}v${b[3].toFixed(3)}h${(-b[2]).toFixed(3)}z`).join(&#x27;&#x27;)}&quot;/&gt;`;
+   M.T.forEach(t=&gt;{o+=`&lt;text x=&quot;${t.x}&quot; y=&quot;${t.y}&quot; font-size=&quot;${t.pt*0.3528}&quot; text-anchor=&quot;middle&quot; font-family=&quot;${t.f===&#x27;times&#x27;?&#x27;Times New Roman,Times,serif&#x27;:&#x27;Helvetica,Arial,sans-serif&#x27;}&quot; font-weight=&quot;${t.st===&#x27;bold&#x27;?700:400}&quot; fill=&quot;#000&quot;&gt;${esc(t.t)}&lt;/text&gt;`})}
+  else lines(it,L.sz[i],y).forEach(([t,by])=&gt;{o+=`&lt;text x=&quot;${x+S.sw/2}&quot; y=&quot;${by}&quot; font-size=&quot;${L.sz[i]*0.3528}&quot; text-anchor=&quot;middle&quot; font-family=&quot;Helvetica,Arial,sans-serif&quot; font-weight=&quot;700&quot; fill=&quot;#000&quot;&gt;${esc(t)}&lt;/text&gt;`})}
+ $(&#x27;prev&#x27;).innerHTML=o+&#x27;&lt;/svg&gt;&#x27;;
+ {const rt=S.left+S.ox+S.cols*S.sw+(S.cols-1)*S.hgap,bt=S.top+S.oy+S.rows*S.sh+(S.rows-1)*S.vgap+(S.bn&gt;0?Math.floor((S.rows-1)/S.bn)*S.bx:0);
+  const fc=Math.max(0,Math.floor((210-S.left-S.ox+S.hgap)/(S.sw+S.hgap))),fr=Math.max(0,Math.floor((297-S.top-S.oy+S.vgap)/(S.sh+S.vgap)));
+  let w=(rt&gt;210.01||bt&gt;297.01)?`Layout goes outside A4: right edge at ${rt.toFixed(1)} mm (page 210), bottom at ${bt.toFixed(1)} mm (page 297). Only ${fc} columns x ${fr} rows fit. Red stickers get cut off. Re-check the measurements.`:&#x27;&#x27;;
+  if($(&#x27;mode&#x27;).value===&#x27;barcode&#x27;){const f=L.a.find(x=&gt;x&amp;&amp;x.bc);if(f){const M=bcModel(f,0,0);if(f.code&amp;&amp;M.bh&lt;4)w+=(w?&#x27; &#x27;:&#x27;&#x27;)+`Barcode is only ${Math.max(0,M.bh).toFixed(1)} mm tall - too short to scan well. Reduce text sizes or turn off the number under the barcode.`}}
+  $(&#x27;warn&#x27;).textContent=w;}$(&#x27;pg&#x27;).textContent=`Page ${page+1} of ${L.pages}`;
+ $(&#x27;pp&#x27;).disabled=page==0;$(&#x27;pn&#x27;).disabled=page&gt;=L.pages-1;$(&#x27;dl&#x27;).disabled=!jp}
+$(&#x27;dl&#x27;).onclick=async()=&gt;{read();const L=layout();if(!jp)return;
+ const d=new window.jspdf.jsPDF({unit:&#x27;mm&#x27;,format:&#x27;a4&#x27;});d.setFont(&#x27;helvetica&#x27;,&#x27;bold&#x27;);
+ for(let p=0;p&lt;L.pages;p++){if(p)d.addPage();
+  for(let j=0;j&lt;L.per;j++){const i=p*L.per+j;if(i&gt;=L.a.length)break;const it=L.a[i];if(!it)continue;const[x,y]=pos(j);
+   if($(&#x27;border&#x27;).checked){d.setLineWidth(.15);d.setDrawColor(0);d.rect(x,y,S.sw,S.sh,&#x27;S&#x27;)}
+   if(it.bc){const M=bcModel(it,x,y);d.setFillColor(0);M.bars.forEach(b=&gt;d.rect(b[0],b[1],b[2],b[3],&#x27;F&#x27;));
+    d.setTextColor(0);M.T.forEach(t=&gt;{d.setFont(t.f,t.st);d.setFontSize(t.pt);d.text(t.t,t.x,t.y,{align:&#x27;center&#x27;})})}
+   else{d.setFont(&#x27;helvetica&#x27;,&#x27;bold&#x27;);d.setFontSize(L.sz[i]);d.setTextColor(0);lines(it,L.sz[i],y).forEach(([t,by])=&gt;d.text(t,x+S.sw/2,by,{align:&#x27;center&#x27;}))}}}
+ const msg=$(&#x27;msg&#x27;);
+ if(!dl){try{const u=URL.createObjectURL(d.output(&#x27;blob&#x27;)),a=document.createElement(&#x27;a&#x27;);a.href=u;a.download=&#x27;stickers.pdf&#x27;;document.body.appendChild(a);a.click();a.remove();msg.textContent=&#x27;Saved.&#x27;}catch(e){msg.textContent=&#x27;Could not save.&#x27;}return}
+ try{await dl.save({filename:&#x27;stickers.pdf&#x27;,data:d.output(&#x27;blob&#x27;)});msg.textContent=&#x27;Saved.&#x27;}catch(e){msg.textContent=e&amp;&amp;e.code===&#x27;declined&#x27;?&#x27;Cancelled.&#x27;:&#x27;Could not save (&#x27;+(e&amp;&amp;e.code||&#x27;error&#x27;)+&#x27;).&#x27;}};
+$(&#x27;pp&#x27;).onclick=()=&gt;{page--;render()};$(&#x27;pn&#x27;).onclick=()=&gt;{page++;render()};
+$(&#x27;mode&#x27;).onchange=()=&gt;{const m=$(&#x27;mode&#x27;).value;$(&#x27;sameBox&#x27;).style.display=m===&#x27;same&#x27;?&#x27;&#x27;:&#x27;none&#x27;;$(&#x27;autoBox&#x27;).style.display=m===&#x27;auto&#x27;?&#x27;&#x27;:&#x27;none&#x27;;$(&#x27;listBox&#x27;).style.display=m===&#x27;list&#x27;?&#x27;&#x27;:&#x27;none&#x27;;$(&#x27;barBox&#x27;).style.display=m===&#x27;barcode&#x27;?&#x27;&#x27;:&#x27;none&#x27;;page=0;render()};
+$(&#x27;reset&#x27;).onclick=()=&gt;{S=Object.assign({},D);load();render()};
+document.querySelectorAll(&#x27;input,textarea&#x27;).forEach(e=&gt;e.addEventListener(&#x27;input&#x27;,render));
+render();
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;
+"></iframe>
+    <iframe id="f2" title="84 Sticker Maker" data-doc="&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1, viewport-fit=cover&quot;&gt;
+&lt;title&gt;84 Sticker Maker&lt;/title&gt;
+&lt;style&gt;
+:root{--bg:#f6f5f2;--fg:#1c1c1a;--card:#fff;--bd:#d9d6cf;--ac:#1d4ed8;--mut:#6b6a66;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme=&quot;light&quot;]){--bg:#171716;--fg:#ece9e2;--card:#222220;--bd:#3a3a36;--ac:#6ea0ff;--mut:#9b988f}}
+:root[data-theme=&quot;dark&quot;]{--bg:#171716;--fg:#ece9e2;--card:#222220;--bd:#3a3a36;--ac:#6ea0ff;--mut:#9b988f}
+html,body{height:auto}body{margin:0;background:var(--bg);color:var(--fg);font:15px system-ui,Arial,sans-serif}
+.wrap{display:grid;grid-template-columns:minmax(290px,370px) 1fr;gap:16px;padding:16px;max-width:1100px;margin:auto}
+@media(max-width:760px){.wrap{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:14px}
+h1{font-size:19px;margin:0 0 10px}h2{font-size:14px;margin:14px 0 8px;color:var(--mut);text-transform:uppercase;letter-spacing:.04em}
+label{display:block;font-size:13px;color:var(--mut);margin-bottom:8px}
+input,textarea,select{width:100%;box-sizing:border-box;padding:7px 8px;border:1px solid var(--bd);border-radius:6px;background:var(--bg);color:var(--fg);font:inherit;margin-top:3px}
+textarea{min-height:110px;font-family:ui-monospace,monospace}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.chk{display:flex;gap:8px;align-items:center;color:var(--fg)}.chk input{width:auto;margin:0}
+button{padding:9px 14px;border-radius:7px;border:1px solid var(--bd);background:var(--card);color:var(--fg);font:inherit;cursor:pointer}
+button.p{background:var(--ac);color:#fff;border-color:var(--ac);font-weight:600}button:disabled{opacity:.5;cursor:default}
+.bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.prev{overflow-x:auto}svg{width:100%;max-width:520px;height:auto;display:block;margin:auto;background:#fff;border:1px solid var(--bd);box-shadow:0 2px 8px #0002}
+.note{font-size:12.5px;color:var(--mut);line-height:1.5}#msg{font-size:13px}
+details{margin-top:12px}summary{cursor:pointer;font-weight:600;font-size:14px}
+&lt;/style&gt;
+&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js&quot;&gt;&lt;/script&gt;
+&lt;/head&gt;&lt;body&gt;&lt;div class=&quot;wrap&quot;&gt;
+&lt;div class=&quot;card&quot;&gt;
+&lt;h1&gt;84 Sticker Maker&lt;/h1&gt;
+&lt;label&gt;Mode&lt;select id=&quot;mode&quot;&gt;&lt;option value=&quot;auto&quot;&gt;Auto-number (KD001, KD002...)&lt;/option&gt;&lt;option value=&quot;list&quot;&gt;Custom list (one sticker per line)&lt;/option&gt;&lt;option value=&quot;same&quot;&gt;Same text on all stickers&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;
+&lt;div id=&quot;sameBox&quot; style=&quot;display:none&quot;&gt;
+&lt;label&gt;Line 1&lt;input id=&quot;s1&quot; placeholder=&quot;e.g. FRAGILE&quot;&gt;&lt;/label&gt;
+&lt;label&gt;Line 2 (optional)&lt;input id=&quot;s2&quot;&gt;&lt;/label&gt;
+&lt;label&gt;How many (leave empty = fill whole sheet)&lt;input id=&quot;scount&quot; type=&quot;number&quot; min=&quot;1&quot; placeholder=&quot;whole sheet&quot;&gt;&lt;/label&gt;
+&lt;/div&gt;
+&lt;div id=&quot;autoBox&quot;&gt;
+&lt;div class=&quot;g2&quot;&gt;&lt;label&gt;Prefix&lt;input id=&quot;prefix&quot; value=&quot;KD&quot;&gt;&lt;/label&gt;&lt;label&gt;Start number&lt;input id=&quot;start&quot; type=&quot;number&quot; value=&quot;1&quot;&gt;&lt;/label&gt;&lt;/div&gt;
+&lt;div class=&quot;g2&quot;&gt;&lt;label&gt;Digits&lt;input id=&quot;digits&quot; type=&quot;number&quot; value=&quot;3&quot;&gt;&lt;/label&gt;&lt;label&gt;How many&lt;input id=&quot;count&quot; type=&quot;number&quot; value=&quot;84&quot;&gt;&lt;/label&gt;&lt;/div&gt;
+&lt;label&gt;Line 2 (optional, same on all)&lt;input id=&quot;line2&quot; placeholder=&quot;e.g. Shelf A&quot;&gt;&lt;/label&gt;
+&lt;/div&gt;
+&lt;div id=&quot;listBox&quot; style=&quot;display:none&quot;&gt;&lt;label&gt;Text (use &lt;b&gt;|&lt;/b&gt; to split into 2 lines)&lt;textarea id=&quot;list&quot; placeholder=&quot;KD001&amp;#10;Ram Kumar | Ajmer&amp;#10;...&quot;&gt;&lt;/textarea&gt;&lt;/label&gt;&lt;/div&gt;
+&lt;div class=&quot;g2&quot;&gt;&lt;label&gt;Skip first N stickers&lt;input id=&quot;skip&quot; type=&quot;number&quot; value=&quot;0&quot; min=&quot;0&quot;&gt;&lt;/label&gt;&lt;label&gt;Max font (pt)&lt;input id=&quot;maxpt&quot; type=&quot;number&quot; step=&quot;0.5&quot;&gt;&lt;/label&gt;&lt;/div&gt;
+&lt;label class=&quot;chk&quot;&gt;&lt;input id=&quot;uni&quot; type=&quot;checkbox&quot; checked&gt; Same font size on all stickers&lt;/label&gt;
+&lt;label class=&quot;chk&quot;&gt;&lt;input id=&quot;border&quot; type=&quot;checkbox&quot; checked&gt; Print borders (for test print only)&lt;/label&gt;
+&lt;details&gt;&lt;summary&gt;Paper layout (mm)&lt;/summary&gt;
+&lt;div class=&quot;g3&quot; id=&quot;lay&quot; style=&quot;margin-top:8px&quot;&gt;&lt;/div&gt;
+&lt;p class=&quot;note&quot;&gt;Extra gap: after every N rows add this much more space (normally 0). Set 0 to turn off. X/Y shift moves everything to fix printer offset.&lt;/p&gt;
+&lt;button id=&quot;reset&quot;&gt;Reset layout&lt;/button&gt;&lt;/details&gt;
+&lt;/div&gt;
+&lt;div class=&quot;card&quot;&gt;
+&lt;div class=&quot;bar&quot;&gt;&lt;button class=&quot;p&quot; id=&quot;dl&quot;&gt;Download PDF&lt;/button&gt;&lt;button id=&quot;pp&quot;&gt;&amp;larr;&lt;/button&gt;&lt;span id=&quot;pg&quot;&gt;Page 1&lt;/span&gt;&lt;button id=&quot;pn&quot;&gt;&amp;rarr;&lt;/button&gt;&lt;span id=&quot;msg&quot;&gt;&lt;/span&gt;&lt;/div&gt;
+&lt;div id=&quot;warn&quot; class=&quot;note&quot; style=&quot;color:#d33;font-weight:600;margin-bottom:8px&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;prev&quot; id=&quot;prev&quot;&gt;&lt;/div&gt;
+&lt;p class=&quot;note&quot;&gt;Test first: tick &quot;Print borders&quot;, print on plain paper at 100% (Actual size, no &quot;fit to page&quot;), hold it against the sticker sheet in front of a light. Adjust X/Y shift or sizes until it lines up, then untick borders and print on the real sheet.&lt;/p&gt;
+&lt;/div&gt;&lt;/div&gt;
+&lt;script&gt;
+const $=id=&gt;document.getElementById(id);
+const D={cols:4,rows:21,sw:46,sh:11.11,left:6.5,top:16,hgap:5,vgap:1.7,bn:0,bx:0,ox:0,oy:0,pad:1.5,maxpt:24};
+const LB={cols:&#x27;Columns&#x27;,rows:&#x27;Rows&#x27;,sw:&#x27;Sticker W&#x27;,sh:&#x27;Sticker H&#x27;,left:&#x27;Left margin&#x27;,top:&#x27;Top margin&#x27;,hgap:&#x27;H gap&#x27;,vgap:&#x27;V gap&#x27;,bn:&#x27;Extra gap every N rows&#x27;,bx:&#x27;Extra gap&#x27;,ox:&#x27;X shift&#x27;,oy:&#x27;Y shift&#x27;,pad:&#x27;Side padding&#x27;};
+let S=Object.assign({},D);try{Object.assign(S,JSON.parse(localStorage.getItem(&#x27;sm3&#x27;)||&#x27;{}&#x27;))}catch(e){}
+$(&#x27;lay&#x27;).innerHTML=Object.keys(LB).map(k=&gt;`&lt;label&gt;${LB[k]}&lt;input id=&quot;f_${k}&quot; type=&quot;number&quot; step=&quot;0.1&quot;&gt;&lt;/label&gt;`).join(&#x27;&#x27;);
+const keys=Object.keys(D);
+function load(){keys.forEach(k=&gt;{const e=$(k===&#x27;maxpt&#x27;?&#x27;maxpt&#x27;:&#x27;f_&#x27;+k);if(e)e.value=S[k]})}
+load();
+let jp=null,cv=document.createElement(&#x27;canvas&#x27;).getContext(&#x27;2d&#x27;),page=0,dl=null;
+try{jp=new window.jspdf.jsPDF({unit:&#x27;mm&#x27;,format:&#x27;a4&#x27;})}catch(e){}
+if(window.claude&amp;&amp;claude.use)claude.use(&#x27;downloads&#x27;).then(d=&gt;{dl=d}).catch(()=&gt;{});
+const K=0.3528*0.716;
+function w1(t){if(jp){jp.setFont(&#x27;helvetica&#x27;,&#x27;bold&#x27;);jp.setFontSize(100);return jp.getTextWidth(t)/100}cv.font=&#x27;bold 100px Arial&#x27;;return cv.measureText(t).width/100*0.3528}
+function read(){keys.forEach(k=&gt;{const e=$(k===&#x27;maxpt&#x27;?&#x27;maxpt&#x27;:&#x27;f_&#x27;+k);const v=parseFloat(e.value);if(!isNaN(v))S[k]=v});try{localStorage.setItem(&#x27;sm3&#x27;,JSON.stringify(S))}catch(e){}}
+function items(){
+ let a=[];const skip=Math.max(0,parseInt($(&#x27;skip&#x27;).value)||0);
+ if($(&#x27;mode&#x27;).value===&#x27;same&#x27;){const t=$(&#x27;s1&#x27;).value.trim(),t2=$(&#x27;s2&#x27;).value.trim(),c=parseInt($(&#x27;scount&#x27;).value);
+  const n=c&gt;0?c:Math.max(0,S.cols*S.rows-skip);if(t||t2)for(let i=0;i&lt;n;i++)a.push([t,t2]);}
+ else if($(&#x27;mode&#x27;).value===&#x27;auto&#x27;){const n=Math.max(0,parseInt($(&#x27;count&#x27;).value)||0),st=parseInt($(&#x27;start&#x27;).value)||0,d=parseInt($(&#x27;digits&#x27;).value)||0,l2=$(&#x27;line2&#x27;).value.trim();
+  for(let i=0;i&lt;n;i++)a.push([$(&#x27;prefix&#x27;).value+String(st+i).padStart(d,&#x27;0&#x27;),l2]);}
+ else a=$(&#x27;list&#x27;).value.split(&#x27;\n&#x27;).filter(l=&gt;l.trim()).map(l=&gt;{const p=l.split(&#x27;|&#x27;);return[p[0].trim(),(p[1]||&#x27;&#x27;).trim()]});
+ return Array(skip).fill(null).concat(a);
+}
+function size(it){if(!it)return 0;const ls=it.filter(Boolean);let s=S.maxpt;const aw=S.sw-2*S.pad;
+ ls.forEach(t=&gt;{s=Math.min(s,aw/w1(t))});s=Math.min(s,(S.sh-1.8)/(K*(ls.length==2?2.55:1)));return s}
+function pos(i){const c=i%S.cols,r=Math.floor(i/S.cols);return[S.left+S.ox+c*(S.sw+S.hgap),S.top+S.oy+r*(S.sh+S.vgap)+(S.bn&gt;0?Math.floor(r/S.bn)*S.bx:0)]}
+function layout(){const a=items(),per=S.cols*S.rows;let sz=a.map(size);
+ if($(&#x27;uni&#x27;).checked){const m=Math.min(...sz.filter(x=&gt;x&gt;0),S.maxpt);sz=sz.map(x=&gt;x&gt;0?m:0)}
+ return{a,sz,per,pages:Math.max(1,Math.ceil(a.length/per))}}
+function lines(it,s,y){const ls=it.filter(Boolean),cap=K*s,cy=y+S.sh/2;
+ if(ls.length==2){const d=1.55*cap;return[[ls[0],cy-d/2+cap/2],[ls[1],cy+d/2+cap/2]]}return[[ls[0]||&#x27;&#x27;,cy+cap/2]]}
+const esc=t=&gt;t.replace(/&amp;/g,&#x27;&amp;amp;&#x27;).replace(/&lt;/g,&#x27;&amp;lt;&#x27;);
+function render(){read();const L=layout();page=Math.min(page,L.pages-1);
+ let o=`&lt;svg viewBox=&quot;0 0 210 297&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;`;
+ for(let j=0;j&lt;L.per;j++){const i=page*L.per+j;if(i&gt;=L.a.length)break;const it=L.a[i];if(!it)continue;const[x,y]=pos(j);
+  const out=x+S.sw&gt;210.01||y+S.sh&gt;297.01;
+  if(out)o+=`&lt;rect x=&quot;${x}&quot; y=&quot;${y}&quot; width=&quot;${S.sw}&quot; height=&quot;${S.sh}&quot; fill=&quot;#f003&quot; stroke=&quot;#d00&quot; stroke-width=&quot;.3&quot;/&gt;`;
+  else if($(&#x27;border&#x27;).checked)o+=`&lt;rect x=&quot;${x}&quot; y=&quot;${y}&quot; width=&quot;${S.sw}&quot; height=&quot;${S.sh}&quot; fill=&quot;none&quot; stroke=&quot;#000&quot; stroke-width=&quot;.15&quot;/&gt;`;
+  else o+=`&lt;rect x=&quot;${x}&quot; y=&quot;${y}&quot; width=&quot;${S.sw}&quot; height=&quot;${S.sh}&quot; fill=&quot;none&quot; stroke=&quot;#bbb&quot; stroke-width=&quot;.1&quot; stroke-dasharray=&quot;.6 .6&quot;/&gt;`;
+  lines(it,L.sz[i],y).forEach(([t,by])=&gt;{o+=`&lt;text x=&quot;${x+S.sw/2}&quot; y=&quot;${by}&quot; font-size=&quot;${L.sz[i]*0.3528}&quot; text-anchor=&quot;middle&quot; font-family=&quot;Helvetica,Arial,sans-serif&quot; font-weight=&quot;700&quot; fill=&quot;#000&quot;&gt;${esc(t)}&lt;/text&gt;`})}
+ $(&#x27;prev&#x27;).innerHTML=o+&#x27;&lt;/svg&gt;&#x27;;
+ {const rt=S.left+S.ox+S.cols*S.sw+(S.cols-1)*S.hgap,bt=S.top+S.oy+S.rows*S.sh+(S.rows-1)*S.vgap+(S.bn&gt;0?Math.floor((S.rows-1)/S.bn)*S.bx:0);
+  const fc=Math.max(0,Math.floor((210-S.left-S.ox+S.hgap)/(S.sw+S.hgap))),fr=Math.max(0,Math.floor((297-S.top-S.oy+S.vgap)/(S.sh+S.vgap)));
+  $(&#x27;warn&#x27;).textContent=(rt&gt;210.01||bt&gt;297.01)?`Layout goes outside A4: right edge at ${rt.toFixed(1)} mm (page 210), bottom at ${bt.toFixed(1)} mm (page 297). Only ${fc} columns x ${fr} rows fit. Red stickers get cut off. Re-check the measurements.`:&#x27;&#x27;;}$(&#x27;pg&#x27;).textContent=`Page ${page+1} of ${L.pages}`;
+ $(&#x27;pp&#x27;).disabled=page==0;$(&#x27;pn&#x27;).disabled=page&gt;=L.pages-1;$(&#x27;dl&#x27;).disabled=!jp}
+$(&#x27;dl&#x27;).onclick=async()=&gt;{read();const L=layout();if(!jp)return;
+ const d=new window.jspdf.jsPDF({unit:&#x27;mm&#x27;,format:&#x27;a4&#x27;});d.setFont(&#x27;helvetica&#x27;,&#x27;bold&#x27;);
+ for(let p=0;p&lt;L.pages;p++){if(p)d.addPage();
+  for(let j=0;j&lt;L.per;j++){const i=p*L.per+j;if(i&gt;=L.a.length)break;const it=L.a[i];if(!it)continue;const[x,y]=pos(j);
+   if($(&#x27;border&#x27;).checked){d.setLineWidth(.15);d.setDrawColor(0);d.rect(x,y,S.sw,S.sh,&#x27;S&#x27;)}
+   d.setFontSize(L.sz[i]);d.setTextColor(0);lines(it,L.sz[i],y).forEach(([t,by])=&gt;d.text(t,x+S.sw/2,by,{align:&#x27;center&#x27;}))}}
+ const msg=$(&#x27;msg&#x27;);
+ if(!dl){try{const u=URL.createObjectURL(d.output(&#x27;blob&#x27;)),a=document.createElement(&#x27;a&#x27;);a.href=u;a.download=&#x27;stickers.pdf&#x27;;document.body.appendChild(a);a.click();a.remove();msg.textContent=&#x27;Saved.&#x27;}catch(e){msg.textContent=&#x27;Could not save.&#x27;}return}
+ try{await dl.save({filename:&#x27;stickers.pdf&#x27;,data:d.output(&#x27;blob&#x27;)});msg.textContent=&#x27;Saved.&#x27;}catch(e){msg.textContent=e&amp;&amp;e.code===&#x27;declined&#x27;?&#x27;Cancelled.&#x27;:&#x27;Could not save (&#x27;+(e&amp;&amp;e.code||&#x27;error&#x27;)+&#x27;).&#x27;}};
+$(&#x27;pp&#x27;).onclick=()=&gt;{page--;render()};$(&#x27;pn&#x27;).onclick=()=&gt;{page++;render()};
+$(&#x27;mode&#x27;).onchange=()=&gt;{$(&#x27;sameBox&#x27;).style.display=$(&#x27;mode&#x27;).value===&#x27;same&#x27;?&#x27;&#x27;:&#x27;none&#x27;;$(&#x27;autoBox&#x27;).style.display=$(&#x27;mode&#x27;).value===&#x27;auto&#x27;?&#x27;&#x27;:&#x27;none&#x27;;$(&#x27;listBox&#x27;).style.display=$(&#x27;mode&#x27;).value===&#x27;list&#x27;?&#x27;&#x27;:&#x27;none&#x27;;page=0;render()};
+$(&#x27;reset&#x27;).onclick=()=&gt;{S=Object.assign({},D);load();render()};
+document.querySelectorAll(&#x27;input,textarea&#x27;).forEach(e=&gt;e.addEventListener(&#x27;input&#x27;,render));
+render();
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;
+"></iframe>
+
+  </div>
+</div>
+
+<div class="tips">
+  <div class="tip"><b>🧪 Test print first</b>Keep “Print borders” on and print on plain paper at 100% (Actual size).</div>
+  <div class="tip"><b>📐 Fix alignment</b>Hold the sheet up to a light, then adjust with X / Y shift.</div>
+  <div class="tip"><b>💾 Settings saved</b>Your layout values are remembered in your browser.</div>
+</div>
+<footer>Made for personal use · Internet needed to generate PDFs</footer>
+</div>
+<script>
+const titles=['65 Sticker Maker','65 Pack + Barcode','84 Sticker Maker'];
+const tabs=[...document.querySelectorAll('.tab')];
+const frames=[0,1,2].map(k=>document.getElementById('f'+k));
+tabs.forEach(t=>{const m=t.querySelector('.mini'),c=+t.dataset.c,r=+t.dataset.r;
+  m.style.gridTemplateColumns=`repeat(${c},1fr)`;m.style.gridTemplateRows=`repeat(${r},1fr)`;
+  m.innerHTML='<i></i>'.repeat(c*r)});
+let cur=0;
+function show(i){cur=i;
+  tabs.forEach((t,k)=>t.classList.toggle('on',k==i));
+  frames.forEach((f,k)=>{if(k==i&&!f.srcdoc)f.srcdoc=f.dataset.doc;f.classList.toggle('on',k==i)});
+  document.getElementById('ttl').textContent=titles[i];
+  try{history.replaceState(null,'','#'+i)}catch(e){}}
+tabs.forEach(t=>t.onclick=()=>show(+t.dataset.i));
+document.getElementById('full').onclick=e=>{e.preventDefault();
+  window.open(URL.createObjectURL(new Blob([frames[cur].dataset.doc],{type:'text/html'})),'_blank')};
+const mq=matchMedia('(max-width:760px)');
+function fit(){if(!mq.matches){frames.forEach(f=>f.style.height='');return}
+  const f=frames[cur];try{const d=f.contentDocument;if(d&&d.documentElement){f.style.height=(d.documentElement.scrollHeight+4)+'px'}}catch(e){}}
+setInterval(fit,400);
+const h=parseInt(location.hash.slice(1));show(h>=0&&h<3?h:0);
+</script>
+</body></html>
