@@ -208,7 +208,8 @@ button.p{background:var(--ac);color:#fff;border-color:var(--ac);font-weight:600}
 details{margin-top:12px}summary{cursor:pointer;font-weight:600;font-size:14px}
 .sty{border:1px solid var(--bd);border-radius:8px;padding:10px 10px 2px;margin-bottom:10px}
 .sty b{display:block;font-size:13px;margin-bottom:8px;color:var(--ac)}
-input[type=range]{padding:0;border:0;background:none}.sty label b{display:inline;margin:0;font-size:inherit;color:var(--ac)}
+input[type=range]{padding:0;border:0;background:none}.szrow{display:flex;gap:8px;align-items:center;margin-bottom:8px}.szrow button{width:42px;height:38px;font-size:20px;padding:0;line-height:1;flex:none}.szrow input[type=range]{flex:1;margin:0;min-width:0}.szv{min-width:62px;text-align:right;font-weight:600;color:var(--ac)}
+#xlMsg:empty{display:none}
 &lt;/style&gt;
 &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js&quot;&gt;&lt;/script&gt;
 &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js&quot;&gt;&lt;/script&gt;
@@ -227,10 +228,14 @@ input[type=range]{padding:0;border:0;background:none}.sty label b{display:inline
 &lt;/div&gt;
 &lt;div id=&quot;listBox&quot; style=&quot;display:none&quot;&gt;&lt;label&gt;Text (use &lt;b&gt;|&lt;/b&gt; to split into up to 6 lines)&lt;textarea id=&quot;list&quot; placeholder=&quot;KD001&amp;#10;Ram Kumar | Ajmer&amp;#10;...&quot;&gt;&lt;/textarea&gt;&lt;/label&gt;&lt;/div&gt;
 &lt;div id=&quot;barBox&quot; style=&quot;display:none&quot;&gt;
+&lt;div class=&quot;sty&quot;&gt;&lt;b&gt;Text size&lt;/b&gt;
+&lt;label&gt;What to adjust&lt;select id=&quot;szSel&quot;&gt;&lt;option value=&quot;l1pt&quot;&gt;Line 1&lt;/option&gt;&lt;option value=&quot;l2pt&quot;&gt;Line 2&lt;/option&gt;&lt;option value=&quot;l3pt&quot;&gt;Line 3&lt;/option&gt;&lt;option value=&quot;l4pt&quot;&gt;Line 4&lt;/option&gt;&lt;option value=&quot;numpt&quot;&gt;Number under barcode&lt;/option&gt;&lt;option value=&quot;all&quot;&gt;All lines (1-4)&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;
+&lt;div class=&quot;szrow&quot;&gt;&lt;button type=&quot;button&quot; id=&quot;szDn&quot; aria-label=&quot;Smaller&quot;&gt;&amp;minus;&lt;/button&gt;&lt;input type=&quot;range&quot; id=&quot;szRange&quot; min=&quot;3&quot; max=&quot;20&quot; step=&quot;0.5&quot;&gt;&lt;button type=&quot;button&quot; id=&quot;szUp&quot; aria-label=&quot;Bigger&quot;&gt;+&lt;/button&gt;&lt;span class=&quot;szv&quot; id=&quot;szVal&quot;&gt;&lt;/span&gt;&lt;/div&gt;
+&lt;/div&gt;
 &lt;div class=&quot;sty&quot;&gt;&lt;b&gt;Import from Excel&lt;/b&gt;
 &lt;div class=&quot;bar&quot; style=&quot;margin-bottom:8px&quot;&gt;&lt;button type=&quot;button&quot; class=&quot;p&quot; id=&quot;xlBtn&quot;&gt;Upload Excel file&lt;/button&gt;&lt;button type=&quot;button&quot; id=&quot;xlTpl&quot;&gt;Download template&lt;/button&gt;&lt;button type=&quot;button&quot; id=&quot;xlClr&quot; style=&quot;display:none&quot;&gt;Clear&lt;/button&gt;&lt;/div&gt;
 &lt;input type=&quot;file&quot; id=&quot;xlFile&quot; accept=&quot;.xlsx,.xls,.csv&quot; style=&quot;display:none&quot;&gt;
-&lt;p class=&quot;note&quot; id=&quot;xlMsg&quot;&gt;First row = headings: Line 1, Line 2, Line 3, Line 4, How many, Barcode number. One row per sticker type. Format the Barcode column as Text so leading zeros are kept.&lt;/p&gt;&lt;/div&gt;
+&lt;p class=&quot;note&quot; id=&quot;xlMsg&quot;&gt;&lt;/p&gt;&lt;/div&gt;
 &lt;div id=&quot;abBox&quot;&gt;
 &lt;div class=&quot;sty&quot;&gt;&lt;b&gt;Style A&lt;/b&gt;
 &lt;div class=&quot;g2&quot;&gt;&lt;label&gt;Line 1&lt;input id=&quot;A_1&quot; value=&quot;24001&quot;&gt;&lt;/label&gt;&lt;label&gt;Line 2&lt;input id=&quot;A_2&quot; value=&quot;L&quot;&gt;&lt;/label&gt;&lt;/div&gt;
@@ -245,7 +250,6 @@ input[type=range]{padding:0;border:0;background:none}.sty label b{display:inline
 &lt;label class=&quot;chk&quot; id=&quot;xlNewWrap&quot; style=&quot;display:none&quot;&gt;&lt;input id=&quot;xlnew&quot; type=&quot;checkbox&quot;&gt; Start each Excel row on a new row of stickers&lt;/label&gt;
 &lt;label class=&quot;chk&quot;&gt;&lt;input id=&quot;shownum&quot; type=&quot;checkbox&quot; checked&gt; Print number under barcode&lt;/label&gt;
 &lt;label class=&quot;chk&quot;&gt;&lt;input id=&quot;bold&quot; type=&quot;checkbox&quot;&gt; Bold text lines&lt;/label&gt;
-&lt;div class=&quot;sty&quot; style=&quot;margin-top:12px&quot;&gt;&lt;b&gt;Text size per line&lt;/b&gt;&lt;label&gt;Line 1 &lt;b id=&quot;v_l1pt&quot;&gt;&lt;/b&gt; pt&lt;input type=&quot;range&quot; id=&quot;f_l1pt&quot; min=&quot;3&quot; max=&quot;20&quot; step=&quot;0.5&quot;&gt;&lt;/label&gt;&lt;label&gt;Line 2 &lt;b id=&quot;v_l2pt&quot;&gt;&lt;/b&gt; pt&lt;input type=&quot;range&quot; id=&quot;f_l2pt&quot; min=&quot;3&quot; max=&quot;20&quot; step=&quot;0.5&quot;&gt;&lt;/label&gt;&lt;label&gt;Line 3 &lt;b id=&quot;v_l3pt&quot;&gt;&lt;/b&gt; pt&lt;input type=&quot;range&quot; id=&quot;f_l3pt&quot; min=&quot;3&quot; max=&quot;20&quot; step=&quot;0.5&quot;&gt;&lt;/label&gt;&lt;label&gt;Line 4 &lt;b id=&quot;v_l4pt&quot;&gt;&lt;/b&gt; pt&lt;input type=&quot;range&quot; id=&quot;f_l4pt&quot; min=&quot;3&quot; max=&quot;20&quot; step=&quot;0.5&quot;&gt;&lt;/label&gt;&lt;label&gt;Number under barcode &lt;b id=&quot;v_numpt&quot;&gt;&lt;/b&gt; pt&lt;input type=&quot;range&quot; id=&quot;f_numpt&quot; min=&quot;4&quot; max=&quot;14&quot; step=&quot;0.5&quot;&gt;&lt;/label&gt;&lt;p class=&quot;note&quot;&gt;Drag to set the biggest size for each line. A line that is too wide for the sticker still shrinks automatically to fit.&lt;/p&gt;&lt;/div&gt;
 &lt;details&gt;&lt;summary&gt;Barcode layout&lt;/summary&gt;
 &lt;div class=&quot;g2&quot; id=&quot;blay&quot; style=&quot;margin-top:8px&quot;&gt;&lt;/div&gt;
 &lt;p class=&quot;note&quot;&gt;Barcode is Code 128 (same as common retail/stock labels). Barcode height adjusts automatically to the space left after the text lines.&lt;/p&gt;&lt;/details&gt;
@@ -300,7 +304,7 @@ function bcModel(it,x,y){
   let px=x+S.bpad,isBar=true;
   for(const c of pat){const w=(+c)*m;if(isBar&amp;&amp;bh&gt;0)bars.push([px,y+top,w,bh]);px+=w;isBar=!isBar}}
  return{T,bars,bh}}
-function read(){keys.forEach(k=&gt;{const e=$(k===&#x27;maxpt&#x27;?&#x27;maxpt&#x27;:&#x27;f_&#x27;+k);const v=parseFloat(e.value);if(!isNaN(v))S[k]=v});keys.forEach(k=&gt;{const v=$(&#x27;v_&#x27;+k);if(v)v.textContent=S[k]});try{localStorage.setItem(&#x27;sm4&#x27;,JSON.stringify(S))}catch(e){}}
+function read(){keys.forEach(k=&gt;{const e=$(k===&#x27;maxpt&#x27;?&#x27;maxpt&#x27;:&#x27;f_&#x27;+k);if(!e)return;const v=parseFloat(e.value);if(!isNaN(v))S[k]=v});syncSz();try{localStorage.setItem(&#x27;sm4&#x27;,JSON.stringify(S))}catch(e){}}
 function items(){
  let a=[];const skip=Math.max(0,parseInt($(&#x27;skip&#x27;).value)||0);
  if($(&#x27;mode&#x27;).value===&#x27;same&#x27;){const ls=$(&#x27;s1&#x27;).value.split(&#x27;\n&#x27;).map(x=&gt;x.trim()).filter(Boolean).slice(0,6),c=parseInt($(&#x27;scount&#x27;).value);
@@ -391,6 +395,15 @@ $(&#x27;xlTpl&#x27;).onclick=async()=&gt;{
   const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,&#x27;Barcodes&#x27;);
   await saveBlob(new Blob([XLSX.write(wb,{bookType:&#x27;xlsx&#x27;,type:&#x27;array&#x27;})],{type:&#x27;application/octet-stream&#x27;}),&#x27;barcode_template.xlsx&#x27;);
   xlNote(&#x27;Template saved. Fill it in and upload it.&#x27;)}catch(err){xlNote(err&amp;&amp;err.code===&#x27;declined&#x27;?&#x27;Cancelled.&#x27;:(err.message||&#x27;Could not save the template.&#x27;),true)}};
+/* ---- text size control ---- */
+function syncSz(){const sel=$(&#x27;szSel&#x27;).value,num=sel===&#x27;numpt&#x27;,r=$(&#x27;szRange&#x27;);r.min=num?4:3;r.max=num?14:20;
+ const v=sel===&#x27;all&#x27;?S.l1pt:S[sel];r.value=v;$(&#x27;szVal&#x27;).textContent=v+&#x27; pt&#x27;}
+function setSz(v){const sel=$(&#x27;szSel&#x27;).value,r=$(&#x27;szRange&#x27;),lo=+r.min,hi=+r.max;v=Math.min(hi,Math.max(lo,Math.round(v*2)/2));
+ (sel===&#x27;all&#x27;?[&#x27;l1pt&#x27;,&#x27;l2pt&#x27;,&#x27;l3pt&#x27;,&#x27;l4pt&#x27;]:[sel]).forEach(k=&gt;S[k]=v);render()}
+$(&#x27;szSel&#x27;).onchange=syncSz;
+$(&#x27;szRange&#x27;).addEventListener(&#x27;input&#x27;,e=&gt;setSz(parseFloat(e.target.value)));
+$(&#x27;szDn&#x27;).onclick=()=&gt;setSz((+$(&#x27;szRange&#x27;).value)-0.5);
+$(&#x27;szUp&#x27;).onclick=()=&gt;setSz((+$(&#x27;szRange&#x27;).value)+0.5);
 $(&#x27;pp&#x27;).onclick=()=&gt;{page--;render()};$(&#x27;pn&#x27;).onclick=()=&gt;{page++;render()};
 $(&#x27;mode&#x27;).onchange=()=&gt;{const m=$(&#x27;mode&#x27;).value;$(&#x27;sameBox&#x27;).style.display=m===&#x27;same&#x27;?&#x27;&#x27;:&#x27;none&#x27;;$(&#x27;autoBox&#x27;).style.display=m===&#x27;auto&#x27;?&#x27;&#x27;:&#x27;none&#x27;;$(&#x27;listBox&#x27;).style.display=m===&#x27;list&#x27;?&#x27;&#x27;:&#x27;none&#x27;;$(&#x27;barBox&#x27;).style.display=m===&#x27;barcode&#x27;?&#x27;&#x27;:&#x27;none&#x27;;page=0;render()};
 $(&#x27;reset&#x27;).onclick=()=&gt;{S=Object.assign({},D);load();render()};
