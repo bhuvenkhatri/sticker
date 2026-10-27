@@ -208,6 +208,7 @@ button.p{background:var(--ac);color:#fff;border-color:var(--ac);font-weight:600}
 details{margin-top:12px}summary{cursor:pointer;font-weight:600;font-size:14px}
 .sty{border:1px solid var(--bd);border-radius:8px;padding:10px 10px 2px;margin-bottom:10px}
 .sty b{display:block;font-size:13px;margin-bottom:8px;color:var(--ac)}
+input[type=range]{padding:0;border:0;background:none}.sty label b{display:inline;margin:0;font-size:inherit;color:var(--ac)}
 &lt;/style&gt;
 &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js&quot;&gt;&lt;/script&gt;
 &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js&quot;&gt;&lt;/script&gt;
@@ -244,6 +245,7 @@ details{margin-top:12px}summary{cursor:pointer;font-weight:600;font-size:14px}
 &lt;label class=&quot;chk&quot; id=&quot;xlNewWrap&quot; style=&quot;display:none&quot;&gt;&lt;input id=&quot;xlnew&quot; type=&quot;checkbox&quot;&gt; Start each Excel row on a new row of stickers&lt;/label&gt;
 &lt;label class=&quot;chk&quot;&gt;&lt;input id=&quot;shownum&quot; type=&quot;checkbox&quot; checked&gt; Print number under barcode&lt;/label&gt;
 &lt;label class=&quot;chk&quot;&gt;&lt;input id=&quot;bold&quot; type=&quot;checkbox&quot;&gt; Bold text lines&lt;/label&gt;
+&lt;div class=&quot;sty&quot; style=&quot;margin-top:12px&quot;&gt;&lt;b&gt;Text size per line&lt;/b&gt;&lt;label&gt;Line 1 &lt;b id=&quot;v_l1pt&quot;&gt;&lt;/b&gt; pt&lt;input type=&quot;range&quot; id=&quot;f_l1pt&quot; min=&quot;3&quot; max=&quot;20&quot; step=&quot;0.5&quot;&gt;&lt;/label&gt;&lt;label&gt;Line 2 &lt;b id=&quot;v_l2pt&quot;&gt;&lt;/b&gt; pt&lt;input type=&quot;range&quot; id=&quot;f_l2pt&quot; min=&quot;3&quot; max=&quot;20&quot; step=&quot;0.5&quot;&gt;&lt;/label&gt;&lt;label&gt;Line 3 &lt;b id=&quot;v_l3pt&quot;&gt;&lt;/b&gt; pt&lt;input type=&quot;range&quot; id=&quot;f_l3pt&quot; min=&quot;3&quot; max=&quot;20&quot; step=&quot;0.5&quot;&gt;&lt;/label&gt;&lt;label&gt;Line 4 &lt;b id=&quot;v_l4pt&quot;&gt;&lt;/b&gt; pt&lt;input type=&quot;range&quot; id=&quot;f_l4pt&quot; min=&quot;3&quot; max=&quot;20&quot; step=&quot;0.5&quot;&gt;&lt;/label&gt;&lt;label&gt;Number under barcode &lt;b id=&quot;v_numpt&quot;&gt;&lt;/b&gt; pt&lt;input type=&quot;range&quot; id=&quot;f_numpt&quot; min=&quot;4&quot; max=&quot;14&quot; step=&quot;0.5&quot;&gt;&lt;/label&gt;&lt;p class=&quot;note&quot;&gt;Drag to set the biggest size for each line. A line that is too wide for the sticker still shrinks automatically to fit.&lt;/p&gt;&lt;/div&gt;
 &lt;details&gt;&lt;summary&gt;Barcode layout&lt;/summary&gt;
 &lt;div class=&quot;g2&quot; id=&quot;blay&quot; style=&quot;margin-top:8px&quot;&gt;&lt;/div&gt;
 &lt;p class=&quot;note&quot;&gt;Barcode is Code 128 (same as common retail/stock labels). Barcode height adjusts automatically to the space left after the text lines.&lt;/p&gt;&lt;/details&gt;
@@ -264,10 +266,10 @@ details{margin-top:12px}summary{cursor:pointer;font-weight:600;font-size:14px}
 &lt;/div&gt;&lt;/div&gt;
 &lt;script&gt;
 const $=id=&gt;document.getElementById(id);
-const D={cols:5,rows:13,sw:38.1,sh:21.2,left:5,top:10.7,hgap:2.4,vgap:0.08,bn:0,bx:0,ox:0,oy:0,pad:1.5,maxpt:30,btop:1.2,bpad:2.5,bigpt:9,smallpt:6.5,numpt:8.5};
+const D={cols:5,rows:13,sw:38.1,sh:21.2,left:5,top:10.7,hgap:2.4,vgap:0.08,bn:0,bx:0,ox:0,oy:0,pad:1.5,maxpt:30,btop:1.2,bpad:2.5,l1pt:9,l2pt:9,l3pt:6.5,l4pt:6.5,numpt:8.5};
 const LB={cols:&#x27;Columns&#x27;,rows:&#x27;Rows&#x27;,sw:&#x27;Sticker W&#x27;,sh:&#x27;Sticker H&#x27;,left:&#x27;Left margin&#x27;,top:&#x27;Top margin&#x27;,hgap:&#x27;H gap&#x27;,vgap:&#x27;V gap&#x27;,bn:&#x27;Extra gap every N rows&#x27;,bx:&#x27;Extra gap&#x27;,ox:&#x27;X shift&#x27;,oy:&#x27;Y shift&#x27;,pad:&#x27;Side padding&#x27;};
-const BL={btop:&#x27;Top space&#x27;,bpad:&#x27;Barcode side space&#x27;,bigpt:&#x27;Lines 1-2 size (pt)&#x27;,smallpt:&#x27;Lines 3-4 size (pt)&#x27;,numpt:&#x27;Number size (pt)&#x27;};
-let S=Object.assign({},D);try{Object.assign(S,JSON.parse(localStorage.getItem(&#x27;sm4&#x27;)||&#x27;{}&#x27;))}catch(e){}
+const BL={btop:&#x27;Top space&#x27;,bpad:&#x27;Barcode side space&#x27;};
+let S=Object.assign({},D);try{const o=JSON.parse(localStorage.getItem(&#x27;sm4&#x27;)||&#x27;{}&#x27;);if(o.bigpt!=null){if(o.l1pt==null)o.l1pt=o.bigpt;if(o.l2pt==null)o.l2pt=o.bigpt}if(o.smallpt!=null){if(o.l3pt==null)o.l3pt=o.smallpt;if(o.l4pt==null)o.l4pt=o.smallpt}Object.assign(S,o)}catch(e){}
 $(&#x27;lay&#x27;).innerHTML=Object.keys(LB).map(k=&gt;`&lt;label&gt;${LB[k]}&lt;input id=&quot;f_${k}&quot; type=&quot;number&quot; step=&quot;0.1&quot;&gt;&lt;/label&gt;`).join(&#x27;&#x27;);
 $(&#x27;blay&#x27;).innerHTML=Object.keys(BL).map(k=&gt;`&lt;label&gt;${BL[k]}&lt;input id=&quot;f_${k}&quot; type=&quot;number&quot; step=&quot;0.1&quot;&gt;&lt;/label&gt;`).join(&#x27;&#x27;);
 const keys=Object.keys(D);
@@ -288,7 +290,7 @@ function c128(s){const v=[];
  return v.map(x=&gt;P[x]).join(&#x27;&#x27;)}
 function bcModel(it,x,y){
  const aw=S.sw-2*S.pad,cx=x+S.sw/2,st=$(&#x27;bold&#x27;).checked?&#x27;bold&#x27;:&#x27;normal&#x27;,T=[],bars=[];let cy=S.btop,bh=0;
- it.l.forEach((t,i)=&gt;{if(!t)return;const base=i&lt;2?S.bigpt:S.smallpt,pt=Math.min(base,aw/tw(t,&#x27;helvetica&#x27;,st)),cap=K*pt;
+ it.l.forEach((t,i)=&gt;{if(!t)return;const base=S[&#x27;l&#x27;+(i+1)+&#x27;pt&#x27;],pt=Math.min(base,aw/tw(t,&#x27;helvetica&#x27;,st)),cap=K*pt;
   T.push({t,x:cx,y:y+cy+cap,pt,f:&#x27;helvetica&#x27;,st});cy+=cap+(i&lt;2?1.0:0.8)});
  if(it.code){let bot=S.sh-1.2;
   if($(&#x27;shownum&#x27;).checked){const pt=Math.min(S.numpt,aw/tw(it.code,&#x27;times&#x27;,&#x27;bold&#x27;)),cap=K*pt;
@@ -298,7 +300,7 @@ function bcModel(it,x,y){
   let px=x+S.bpad,isBar=true;
   for(const c of pat){const w=(+c)*m;if(isBar&amp;&amp;bh&gt;0)bars.push([px,y+top,w,bh]);px+=w;isBar=!isBar}}
  return{T,bars,bh}}
-function read(){keys.forEach(k=&gt;{const e=$(k===&#x27;maxpt&#x27;?&#x27;maxpt&#x27;:&#x27;f_&#x27;+k);const v=parseFloat(e.value);if(!isNaN(v))S[k]=v});try{localStorage.setItem(&#x27;sm4&#x27;,JSON.stringify(S))}catch(e){}}
+function read(){keys.forEach(k=&gt;{const e=$(k===&#x27;maxpt&#x27;?&#x27;maxpt&#x27;:&#x27;f_&#x27;+k);const v=parseFloat(e.value);if(!isNaN(v))S[k]=v});keys.forEach(k=&gt;{const v=$(&#x27;v_&#x27;+k);if(v)v.textContent=S[k]});try{localStorage.setItem(&#x27;sm4&#x27;,JSON.stringify(S))}catch(e){}}
 function items(){
  let a=[];const skip=Math.max(0,parseInt($(&#x27;skip&#x27;).value)||0);
  if($(&#x27;mode&#x27;).value===&#x27;same&#x27;){const ls=$(&#x27;s1&#x27;).value.split(&#x27;\n&#x27;).map(x=&gt;x.trim()).filter(Boolean).slice(0,6),c=parseInt($(&#x27;scount&#x27;).value);
