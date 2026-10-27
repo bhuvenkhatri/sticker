@@ -210,6 +210,7 @@ details{margin-top:12px}summary{cursor:pointer;font-weight:600;font-size:14px}
 .sty b{display:block;font-size:13px;margin-bottom:8px;color:var(--ac)}
 &lt;/style&gt;
 &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js&quot;&gt;&lt;/script&gt;
 &lt;/head&gt;&lt;body&gt;&lt;div class=&quot;wrap&quot;&gt;
 &lt;div class=&quot;card&quot;&gt;
 &lt;h1&gt;65 Sticker Pack Including Barcode&lt;/h1&gt;
@@ -225,6 +226,11 @@ details{margin-top:12px}summary{cursor:pointer;font-weight:600;font-size:14px}
 &lt;/div&gt;
 &lt;div id=&quot;listBox&quot; style=&quot;display:none&quot;&gt;&lt;label&gt;Text (use &lt;b&gt;|&lt;/b&gt; to split into up to 6 lines)&lt;textarea id=&quot;list&quot; placeholder=&quot;KD001&amp;#10;Ram Kumar | Ajmer&amp;#10;...&quot;&gt;&lt;/textarea&gt;&lt;/label&gt;&lt;/div&gt;
 &lt;div id=&quot;barBox&quot; style=&quot;display:none&quot;&gt;
+&lt;div class=&quot;sty&quot;&gt;&lt;b&gt;Import from Excel&lt;/b&gt;
+&lt;div class=&quot;bar&quot; style=&quot;margin-bottom:8px&quot;&gt;&lt;button type=&quot;button&quot; class=&quot;p&quot; id=&quot;xlBtn&quot;&gt;Upload Excel file&lt;/button&gt;&lt;button type=&quot;button&quot; id=&quot;xlTpl&quot;&gt;Download template&lt;/button&gt;&lt;button type=&quot;button&quot; id=&quot;xlClr&quot; style=&quot;display:none&quot;&gt;Clear&lt;/button&gt;&lt;/div&gt;
+&lt;input type=&quot;file&quot; id=&quot;xlFile&quot; accept=&quot;.xlsx,.xls,.csv&quot; style=&quot;display:none&quot;&gt;
+&lt;p class=&quot;note&quot; id=&quot;xlMsg&quot;&gt;First row = headings: Line 1, Line 2, Line 3, Line 4, How many, Barcode number. One row per sticker type. Format the Barcode column as Text so leading zeros are kept.&lt;/p&gt;&lt;/div&gt;
+&lt;div id=&quot;abBox&quot;&gt;
 &lt;div class=&quot;sty&quot;&gt;&lt;b&gt;Style A&lt;/b&gt;
 &lt;div class=&quot;g2&quot;&gt;&lt;label&gt;Line 1&lt;input id=&quot;A_1&quot; value=&quot;24001&quot;&gt;&lt;/label&gt;&lt;label&gt;Line 2&lt;input id=&quot;A_2&quot; value=&quot;L&quot;&gt;&lt;/label&gt;&lt;/div&gt;
 &lt;div class=&quot;g2&quot;&gt;&lt;label&gt;Line 3 (small)&lt;input id=&quot;A_3&quot; value=&quot;ESTAMP A&quot;&gt;&lt;/label&gt;&lt;label&gt;Line 4 (small)&lt;input id=&quot;A_4&quot; value=&quot;&quot;&gt;&lt;/label&gt;&lt;/div&gt;
@@ -233,7 +239,9 @@ details{margin-top:12px}summary{cursor:pointer;font-weight:600;font-size:14px}
 &lt;div class=&quot;g2&quot;&gt;&lt;label&gt;Line 1&lt;input id=&quot;B_1&quot; value=&quot;24002&quot;&gt;&lt;/label&gt;&lt;label&gt;Line 2&lt;input id=&quot;B_2&quot; value=&quot;M&quot;&gt;&lt;/label&gt;&lt;/div&gt;
 &lt;div class=&quot;g2&quot;&gt;&lt;label&gt;Line 3 (small)&lt;input id=&quot;B_3&quot; value=&quot;ESTAMP B&quot;&gt;&lt;/label&gt;&lt;label&gt;Line 4 (small)&lt;input id=&quot;B_4&quot; value=&quot;&quot;&gt;&lt;/label&gt;&lt;/div&gt;
 &lt;div class=&quot;g2&quot;&gt;&lt;label&gt;How many&lt;input id=&quot;B_n&quot; type=&quot;number&quot; min=&quot;0&quot; value=&quot;5&quot;&gt;&lt;/label&gt;&lt;label&gt;Barcode number&lt;input id=&quot;B_c&quot; value=&quot;233820202853&quot;&gt;&lt;/label&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;label class=&quot;chk&quot;&gt;&lt;input id=&quot;newrow&quot; type=&quot;checkbox&quot; checked&gt; Start Style B on a new row&lt;/label&gt;
+&lt;/div&gt;
+&lt;label class=&quot;chk&quot; id=&quot;newrowWrap&quot;&gt;&lt;input id=&quot;newrow&quot; type=&quot;checkbox&quot; checked&gt; Start Style B on a new row&lt;/label&gt;
+&lt;label class=&quot;chk&quot; id=&quot;xlNewWrap&quot; style=&quot;display:none&quot;&gt;&lt;input id=&quot;xlnew&quot; type=&quot;checkbox&quot;&gt; Start each Excel row on a new row of stickers&lt;/label&gt;
 &lt;label class=&quot;chk&quot;&gt;&lt;input id=&quot;shownum&quot; type=&quot;checkbox&quot; checked&gt; Print number under barcode&lt;/label&gt;
 &lt;label class=&quot;chk&quot;&gt;&lt;input id=&quot;bold&quot; type=&quot;checkbox&quot;&gt; Bold text lines&lt;/label&gt;
 &lt;details&gt;&lt;summary&gt;Barcode layout&lt;/summary&gt;
@@ -297,6 +305,9 @@ function items(){
   const n=c&gt;0?c:Math.max(0,S.cols*S.rows-skip);if(ls.length)for(let i=0;i&lt;n;i++)a.push(ls);}
  else if($(&#x27;mode&#x27;).value===&#x27;auto&#x27;){const n=Math.max(0,parseInt($(&#x27;count&#x27;).value)||0),st=parseInt($(&#x27;start&#x27;).value)||0,d=parseInt($(&#x27;digits&#x27;).value)||0,l2=$(&#x27;line2&#x27;).value.split(&#x27;\n&#x27;).map(x=&gt;x.trim()).filter(Boolean).slice(0,5);
   for(let i=0;i&lt;n;i++)a.push([$(&#x27;prefix&#x27;).value+String(st+i).padStart(d,&#x27;0&#x27;),...l2]);}
+ else if($(&#x27;mode&#x27;).value===&#x27;barcode&#x27;&amp;&amp;xl){
+  xl.forEach(r=&gt;{if($(&#x27;xlnew&#x27;).checked&amp;&amp;a.length){const pad=(S.cols-(skip+a.length)%S.cols)%S.cols;a=a.concat(Array(pad).fill(null))}
+   const o={bc:1,l:r.l,code:r.code};for(let i=0;i&lt;r.n;i++)a.push(o)})}
  else if($(&#x27;mode&#x27;).value===&#x27;barcode&#x27;){
   const mk=p=&gt;{const n=Math.max(0,parseInt($(p+&#x27;_n&#x27;).value)||0),o={bc:1,l:[$(p+&#x27;_1&#x27;).value.trim(),$(p+&#x27;_2&#x27;).value.trim(),$(p+&#x27;_3&#x27;).value.trim(),$(p+&#x27;_4&#x27;).value.trim()],code:$(p+&#x27;_c&#x27;).value.trim()};return Array(n).fill(o)};
   const A=mk(&#x27;A&#x27;),B=mk(&#x27;B&#x27;);a=A;
@@ -342,6 +353,42 @@ $(&#x27;dl&#x27;).onclick=async()=&gt;{read();const L=layout();if(!jp)return;
  const msg=$(&#x27;msg&#x27;);
  if(!dl){try{const u=URL.createObjectURL(d.output(&#x27;blob&#x27;)),a=document.createElement(&#x27;a&#x27;);a.href=u;a.download=&#x27;stickers.pdf&#x27;;document.body.appendChild(a);a.click();a.remove();msg.textContent=&#x27;Saved.&#x27;}catch(e){msg.textContent=&#x27;Could not save.&#x27;}return}
  try{await dl.save({filename:&#x27;stickers.pdf&#x27;,data:d.output(&#x27;blob&#x27;)});msg.textContent=&#x27;Saved.&#x27;}catch(e){msg.textContent=e&amp;&amp;e.code===&#x27;declined&#x27;?&#x27;Cancelled.&#x27;:&#x27;Could not save (&#x27;+(e&amp;&amp;e.code||&#x27;error&#x27;)+&#x27;).&#x27;}};
+/* ---- Excel import ---- */
+let xl=null;
+function xlSet(rows){xl=rows;$(&#x27;abBox&#x27;).style.display=rows?&#x27;none&#x27;:&#x27;&#x27;;$(&#x27;newrowWrap&#x27;).style.display=rows?&#x27;none&#x27;:&#x27;&#x27;;$(&#x27;xlNewWrap&#x27;).style.display=rows?&#x27;&#x27;:&#x27;none&#x27;;$(&#x27;xlClr&#x27;).style.display=rows?&#x27;&#x27;:&#x27;none&#x27;}
+function xlNote(t,bad){const m=$(&#x27;xlMsg&#x27;);m.textContent=t;m.style.color=bad?&#x27;#d33&#x27;:&#x27;&#x27;;m.style.fontWeight=bad?&#x27;600&#x27;:&#x27;&#x27;}
+function parseXl(ws){
+ const R=XLSX.utils.sheet_to_json(ws,{header:1,raw:false,defval:&#x27;&#x27;,blankrows:false});
+ if(!R.length)return[];
+ const norm=v=&gt;String(v).toLowerCase().replace(/[^a-z0-9]/g,&#x27;&#x27;);
+ const H=R[0].map(norm),find=a=&gt;H.findIndex(h=&gt;a.includes(h));
+ let ix=[find([&#x27;line1&#x27;,&#x27;l1&#x27;]),find([&#x27;line2&#x27;,&#x27;l2&#x27;]),find([&#x27;line3&#x27;,&#x27;l3&#x27;]),find([&#x27;line4&#x27;,&#x27;l4&#x27;]),find([&#x27;howmany&#x27;,&#x27;qty&#x27;,&#x27;quantity&#x27;,&#x27;count&#x27;,&#x27;nos&#x27;,&#x27;pcs&#x27;]),find([&#x27;barcodenumber&#x27;,&#x27;barcode&#x27;,&#x27;barcodeno&#x27;,&#x27;code&#x27;])],st=1;
+ if(ix.every(v=&gt;v&lt;0)){ix=[0,1,2,3,4,5];st=0}
+ return R.slice(st).map(r=&gt;{const g=i=&gt;i&lt;0?&#x27;&#x27;:String(r[i]==null?&#x27;&#x27;:r[i]).trim(),q=g(ix[4]);
+  return{l:[g(ix[0]),g(ix[1]),g(ix[2]),g(ix[3])],n:q===&#x27;&#x27;?1:Math.max(0,parseInt(q.replace(/,/g,&#x27;&#x27;),10)||0),code:g(ix[5])}}).filter(x=&gt;x.code||x.l.some(Boolean))}
+async function saveBlob(blob,name){
+ if(!dl){const u=URL.createObjectURL(blob),a=document.createElement(&#x27;a&#x27;);a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();return}
+ await dl.save({filename:name,data:blob})}
+$(&#x27;xlBtn&#x27;).onclick=()=&gt;$(&#x27;xlFile&#x27;).click();
+$(&#x27;xlClr&#x27;).onclick=()=&gt;{xlSet(null);xlNote(&#x27;Excel cleared. Back to Style A / Style B.&#x27;);page=0;render()};
+$(&#x27;xlFile&#x27;).onchange=async e=&gt;{const f=e.target.files[0];if(!f)return;
+ try{if(!window.XLSX)throw new Error(&#x27;Excel reader did not load. Check your internet and reload.&#x27;);
+  const wb=XLSX.read(await f.arrayBuffer(),{type:&#x27;array&#x27;}),rows=parseXl(wb.Sheets[wb.SheetNames[0]]);
+  if(!rows.length)throw new Error(&#x27;No data rows found. Put headings in the first row and details below.&#x27;);
+  const tot=rows.reduce((a,r)=&gt;a+r.n,0),bad=rows.filter(r=&gt;/e\+/i.test(r.code)).length,nocode=rows.filter(r=&gt;!r.code).length;
+  xlSet(rows);page=0;
+  let t=`Loaded &quot;${f.name}&quot;: ${rows.length} rows, ${tot} stickers.`,w=false;
+  if(bad){t+=` ${bad} barcode(s) look like 1.23E+13 - format that column as Text in Excel and upload again.`;w=true}
+  if(nocode){t+=` ${nocode} row(s) have no barcode number.`;w=true}
+  xlNote(t,w)}catch(err){xlNote(err.message||&#x27;Could not read the file.&#x27;,true)}
+ e.target.value=&#x27;&#x27;;render()};
+$(&#x27;xlTpl&#x27;).onclick=async()=&gt;{
+ try{if(!window.XLSX)throw new Error(&#x27;Excel reader did not load.&#x27;);
+  const ws=XLSX.utils.aoa_to_sheet([[&#x27;Line 1&#x27;,&#x27;Line 2&#x27;,&#x27;Line 3&#x27;,&#x27;Line 4&#x27;,&#x27;How many&#x27;,&#x27;Barcode number&#x27;],[&#x27;Reff.:24993&#x27;,&#x27;CAMISA LINO M/LARGE&#x27;,&#x27;Size: M&#x27;,&#x27;&#x27;,65,&#x27;0338760100013&#x27;],[&#x27;Reff.:24994&#x27;,&#x27;CAMISA LINO M/LARGE&#x27;,&#x27;Size: L&#x27;,&#x27;&#x27;,40,&#x27;0338760100020&#x27;]]);
+  ws[&#x27;!cols&#x27;]=[{wch:14},{wch:24},{wch:12},{wch:12},{wch:10},{wch:18}];
+  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,&#x27;Barcodes&#x27;);
+  await saveBlob(new Blob([XLSX.write(wb,{bookType:&#x27;xlsx&#x27;,type:&#x27;array&#x27;})],{type:&#x27;application/octet-stream&#x27;}),&#x27;barcode_template.xlsx&#x27;);
+  xlNote(&#x27;Template saved. Fill it in and upload it.&#x27;)}catch(err){xlNote(err&amp;&amp;err.code===&#x27;declined&#x27;?&#x27;Cancelled.&#x27;:(err.message||&#x27;Could not save the template.&#x27;),true)}};
 $(&#x27;pp&#x27;).onclick=()=&gt;{page--;render()};$(&#x27;pn&#x27;).onclick=()=&gt;{page++;render()};
 $(&#x27;mode&#x27;).onchange=()=&gt;{const m=$(&#x27;mode&#x27;).value;$(&#x27;sameBox&#x27;).style.display=m===&#x27;same&#x27;?&#x27;&#x27;:&#x27;none&#x27;;$(&#x27;autoBox&#x27;).style.display=m===&#x27;auto&#x27;?&#x27;&#x27;:&#x27;none&#x27;;$(&#x27;listBox&#x27;).style.display=m===&#x27;list&#x27;?&#x27;&#x27;:&#x27;none&#x27;;$(&#x27;barBox&#x27;).style.display=m===&#x27;barcode&#x27;?&#x27;&#x27;:&#x27;none&#x27;;page=0;render()};
 $(&#x27;reset&#x27;).onclick=()=&gt;{S=Object.assign({},D);load();render()};
