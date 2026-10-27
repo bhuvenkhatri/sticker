@@ -227,12 +227,12 @@ details{margin-top:12px}summary{cursor:pointer;font-weight:600;font-size:14px}
 &lt;div id=&quot;barBox&quot; style=&quot;display:none&quot;&gt;
 &lt;div class=&quot;sty&quot;&gt;&lt;b&gt;Style A&lt;/b&gt;
 &lt;div class=&quot;g2&quot;&gt;&lt;label&gt;Line 1&lt;input id=&quot;A_1&quot; value=&quot;24001&quot;&gt;&lt;/label&gt;&lt;label&gt;Line 2&lt;input id=&quot;A_2&quot; value=&quot;L&quot;&gt;&lt;/label&gt;&lt;/div&gt;
-&lt;div class=&quot;g2&quot;&gt;&lt;label&gt;Line 3 (small)&lt;input id=&quot;A_3&quot; value=&quot;ESTAMP A&quot;&gt;&lt;/label&gt;&lt;label&gt;How many&lt;input id=&quot;A_n&quot; type=&quot;number&quot; min=&quot;0&quot; value=&quot;5&quot;&gt;&lt;/label&gt;&lt;/div&gt;
-&lt;label&gt;Barcode number&lt;input id=&quot;A_c&quot; value=&quot;233820202846&quot;&gt;&lt;/label&gt;&lt;/div&gt;
+&lt;div class=&quot;g2&quot;&gt;&lt;label&gt;Line 3 (small)&lt;input id=&quot;A_3&quot; value=&quot;ESTAMP A&quot;&gt;&lt;/label&gt;&lt;label&gt;Line 4 (small)&lt;input id=&quot;A_4&quot; value=&quot;&quot;&gt;&lt;/label&gt;&lt;/div&gt;
+&lt;div class=&quot;g2&quot;&gt;&lt;label&gt;How many&lt;input id=&quot;A_n&quot; type=&quot;number&quot; min=&quot;0&quot; value=&quot;5&quot;&gt;&lt;/label&gt;&lt;label&gt;Barcode number&lt;input id=&quot;A_c&quot; value=&quot;233820202846&quot;&gt;&lt;/label&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;div class=&quot;sty&quot;&gt;&lt;b&gt;Style B&lt;/b&gt;
 &lt;div class=&quot;g2&quot;&gt;&lt;label&gt;Line 1&lt;input id=&quot;B_1&quot; value=&quot;24002&quot;&gt;&lt;/label&gt;&lt;label&gt;Line 2&lt;input id=&quot;B_2&quot; value=&quot;M&quot;&gt;&lt;/label&gt;&lt;/div&gt;
-&lt;div class=&quot;g2&quot;&gt;&lt;label&gt;Line 3 (small)&lt;input id=&quot;B_3&quot; value=&quot;ESTAMP B&quot;&gt;&lt;/label&gt;&lt;label&gt;How many&lt;input id=&quot;B_n&quot; type=&quot;number&quot; min=&quot;0&quot; value=&quot;5&quot;&gt;&lt;/label&gt;&lt;/div&gt;
-&lt;label&gt;Barcode number&lt;input id=&quot;B_c&quot; value=&quot;233820202853&quot;&gt;&lt;/label&gt;&lt;/div&gt;
+&lt;div class=&quot;g2&quot;&gt;&lt;label&gt;Line 3 (small)&lt;input id=&quot;B_3&quot; value=&quot;ESTAMP B&quot;&gt;&lt;/label&gt;&lt;label&gt;Line 4 (small)&lt;input id=&quot;B_4&quot; value=&quot;&quot;&gt;&lt;/label&gt;&lt;/div&gt;
+&lt;div class=&quot;g2&quot;&gt;&lt;label&gt;How many&lt;input id=&quot;B_n&quot; type=&quot;number&quot; min=&quot;0&quot; value=&quot;5&quot;&gt;&lt;/label&gt;&lt;label&gt;Barcode number&lt;input id=&quot;B_c&quot; value=&quot;233820202853&quot;&gt;&lt;/label&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;label class=&quot;chk&quot;&gt;&lt;input id=&quot;newrow&quot; type=&quot;checkbox&quot; checked&gt; Start Style B on a new row&lt;/label&gt;
 &lt;label class=&quot;chk&quot;&gt;&lt;input id=&quot;shownum&quot; type=&quot;checkbox&quot; checked&gt; Print number under barcode&lt;/label&gt;
 &lt;label class=&quot;chk&quot;&gt;&lt;input id=&quot;bold&quot; type=&quot;checkbox&quot;&gt; Bold text lines&lt;/label&gt;
@@ -258,7 +258,7 @@ details{margin-top:12px}summary{cursor:pointer;font-weight:600;font-size:14px}
 const $=id=&gt;document.getElementById(id);
 const D={cols:5,rows:13,sw:38.1,sh:21.2,left:5,top:10.7,hgap:2.4,vgap:0.08,bn:0,bx:0,ox:0,oy:0,pad:1.5,maxpt:30,btop:1.2,bpad:2.5,bigpt:9,smallpt:6.5,numpt:8.5};
 const LB={cols:&#x27;Columns&#x27;,rows:&#x27;Rows&#x27;,sw:&#x27;Sticker W&#x27;,sh:&#x27;Sticker H&#x27;,left:&#x27;Left margin&#x27;,top:&#x27;Top margin&#x27;,hgap:&#x27;H gap&#x27;,vgap:&#x27;V gap&#x27;,bn:&#x27;Extra gap every N rows&#x27;,bx:&#x27;Extra gap&#x27;,ox:&#x27;X shift&#x27;,oy:&#x27;Y shift&#x27;,pad:&#x27;Side padding&#x27;};
-const BL={btop:&#x27;Top space&#x27;,bpad:&#x27;Barcode side space&#x27;,bigpt:&#x27;Lines 1-2 size (pt)&#x27;,smallpt:&#x27;Line 3 size (pt)&#x27;,numpt:&#x27;Number size (pt)&#x27;};
+const BL={btop:&#x27;Top space&#x27;,bpad:&#x27;Barcode side space&#x27;,bigpt:&#x27;Lines 1-2 size (pt)&#x27;,smallpt:&#x27;Lines 3-4 size (pt)&#x27;,numpt:&#x27;Number size (pt)&#x27;};
 let S=Object.assign({},D);try{Object.assign(S,JSON.parse(localStorage.getItem(&#x27;sm4&#x27;)||&#x27;{}&#x27;))}catch(e){}
 $(&#x27;lay&#x27;).innerHTML=Object.keys(LB).map(k=&gt;`&lt;label&gt;${LB[k]}&lt;input id=&quot;f_${k}&quot; type=&quot;number&quot; step=&quot;0.1&quot;&gt;&lt;/label&gt;`).join(&#x27;&#x27;);
 $(&#x27;blay&#x27;).innerHTML=Object.keys(BL).map(k=&gt;`&lt;label&gt;${BL[k]}&lt;input id=&quot;f_${k}&quot; type=&quot;number&quot; step=&quot;0.1&quot;&gt;&lt;/label&gt;`).join(&#x27;&#x27;);
@@ -298,7 +298,7 @@ function items(){
  else if($(&#x27;mode&#x27;).value===&#x27;auto&#x27;){const n=Math.max(0,parseInt($(&#x27;count&#x27;).value)||0),st=parseInt($(&#x27;start&#x27;).value)||0,d=parseInt($(&#x27;digits&#x27;).value)||0,l2=$(&#x27;line2&#x27;).value.split(&#x27;\n&#x27;).map(x=&gt;x.trim()).filter(Boolean).slice(0,5);
   for(let i=0;i&lt;n;i++)a.push([$(&#x27;prefix&#x27;).value+String(st+i).padStart(d,&#x27;0&#x27;),...l2]);}
  else if($(&#x27;mode&#x27;).value===&#x27;barcode&#x27;){
-  const mk=p=&gt;{const n=Math.max(0,parseInt($(p+&#x27;_n&#x27;).value)||0),o={bc:1,l:[$(p+&#x27;_1&#x27;).value.trim(),$(p+&#x27;_2&#x27;).value.trim(),$(p+&#x27;_3&#x27;).value.trim()],code:$(p+&#x27;_c&#x27;).value.trim()};return Array(n).fill(o)};
+  const mk=p=&gt;{const n=Math.max(0,parseInt($(p+&#x27;_n&#x27;).value)||0),o={bc:1,l:[$(p+&#x27;_1&#x27;).value.trim(),$(p+&#x27;_2&#x27;).value.trim(),$(p+&#x27;_3&#x27;).value.trim(),$(p+&#x27;_4&#x27;).value.trim()],code:$(p+&#x27;_c&#x27;).value.trim()};return Array(n).fill(o)};
   const A=mk(&#x27;A&#x27;),B=mk(&#x27;B&#x27;);a=A;
   if($(&#x27;newrow&#x27;).checked&amp;&amp;A.length&amp;&amp;B.length){const pad=(S.cols-(skip+A.length)%S.cols)%S.cols;a=a.concat(Array(pad).fill(null))}
   a=a.concat(B);}
