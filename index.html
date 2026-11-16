@@ -106,7 +106,7 @@ details{margin-top:12px}summary{cursor:pointer;font-weight:600;font-size:14px}
 &lt;div class=&quot;g2&quot;&gt;&lt;label&gt;Digits&lt;input id=&quot;digits&quot; type=&quot;number&quot; value=&quot;3&quot;&gt;&lt;/label&gt;&lt;label&gt;How many&lt;input id=&quot;count&quot; type=&quot;number&quot; value=&quot;65&quot;&gt;&lt;/label&gt;&lt;/div&gt;
 &lt;label&gt;Extra lines under the number (optional, up to 5, one per line)&lt;textarea id=&quot;line2&quot; style=&quot;min-height:70px&quot; placeholder=&quot;Shelf A&amp;#10;Row 2&quot;&gt;&lt;/textarea&gt;&lt;/label&gt;
 &lt;/div&gt;
-&lt;div id=&quot;listBox&quot; style=&quot;display:none&quot;&gt;&lt;label&gt;Text (use &lt;b&gt;|&lt;/b&gt; to split into up to 6 lines)&lt;textarea id=&quot;list&quot; placeholder=&quot;KD001&amp;#10;Ram Kumar | Ajmer&amp;#10;...&quot;&gt;&lt;/textarea&gt;&lt;/label&gt;&lt;/div&gt;
+&lt;div id=&quot;listBox&quot; style=&quot;display:none&quot;&gt;&lt;label&gt;Text (use &lt;b&gt;|&lt;/b&gt; to split into up to 6 lines)&lt;textarea id=&quot;list&quot; placeholder=&quot;KD001&amp;#10;Ram Kumar | Ajmer&amp;#10;...&quot;&gt;&lt;/textarea&gt;&lt;/label&gt;&lt;label class=&quot;chk&quot;&gt;&lt;input id=&quot;fillrow&quot; type=&quot;checkbox&quot; checked&gt; Fill full row with each line (same text across the row)&lt;/label&gt;&lt;/div&gt;
 &lt;div class=&quot;g2&quot;&gt;&lt;label&gt;Skip first N stickers&lt;input id=&quot;skip&quot; type=&quot;number&quot; value=&quot;0&quot; min=&quot;0&quot;&gt;&lt;/label&gt;&lt;label&gt;Max font (pt)&lt;input id=&quot;maxpt&quot; type=&quot;number&quot; step=&quot;0.5&quot;&gt;&lt;/label&gt;&lt;/div&gt;
 &lt;label class=&quot;chk&quot;&gt;&lt;input id=&quot;uni&quot; type=&quot;checkbox&quot; checked&gt; Same font size on all stickers&lt;/label&gt;
 &lt;label class=&quot;chk&quot;&gt;&lt;input id=&quot;border&quot; type=&quot;checkbox&quot; checked&gt; Print borders (for test print only)&lt;/label&gt;
@@ -142,7 +142,10 @@ function items(){
   const n=c&gt;0?c:Math.max(0,S.cols*S.rows-skip);if(ls.length)for(let i=0;i&lt;n;i++)a.push(ls);}
  else if($(&#x27;mode&#x27;).value===&#x27;auto&#x27;){const n=Math.max(0,parseInt($(&#x27;count&#x27;).value)||0),st=parseInt($(&#x27;start&#x27;).value)||0,d=parseInt($(&#x27;digits&#x27;).value)||0,l2=$(&#x27;line2&#x27;).value.split(&#x27;\n&#x27;).map(x=&gt;x.trim()).filter(Boolean).slice(0,5);
   for(let i=0;i&lt;n;i++)a.push([$(&#x27;prefix&#x27;).value+String(st+i).padStart(d,&#x27;0&#x27;),...l2]);}
- else a=$(&#x27;list&#x27;).value.split(&#x27;\n&#x27;).map(l=&gt;l.split(&#x27;|&#x27;).map(x=&gt;x.trim()).filter(Boolean).slice(0,6)).filter(x=&gt;x.length);
+ else{const L2=$(&#x27;list&#x27;).value.split(&#x27;\n&#x27;).map(l=&gt;l.split(&#x27;|&#x27;).map(x=&gt;x.trim()).filter(Boolean).slice(0,6)).filter(x=&gt;x.length);
+  if($(&#x27;fillrow&#x27;).checked){const c=Math.max(1,S.cols|0);a=Array(skip).fill(null);
+   L2.forEach(it=&gt;{const pad=(c-a.length%c)%c;a=a.concat(Array(pad).fill(null));for(let i=0;i&lt;c;i++)a.push(it)});return a}
+  a=L2}
  return Array(skip).fill(null).concat(a);
 }
 function size(it){if(!it)return 0;const ls=it.filter(Boolean);let s=S.maxpt;const aw=S.sw-2*S.pad;
@@ -451,7 +454,7 @@ details{margin-top:12px}summary{cursor:pointer;font-weight:600;font-size:14px}
 &lt;div class=&quot;g2&quot;&gt;&lt;label&gt;Digits&lt;input id=&quot;digits&quot; type=&quot;number&quot; value=&quot;3&quot;&gt;&lt;/label&gt;&lt;label&gt;How many&lt;input id=&quot;count&quot; type=&quot;number&quot; value=&quot;84&quot;&gt;&lt;/label&gt;&lt;/div&gt;
 &lt;label&gt;Line 2 (optional, same on all)&lt;input id=&quot;line2&quot; placeholder=&quot;e.g. Shelf A&quot;&gt;&lt;/label&gt;
 &lt;/div&gt;
-&lt;div id=&quot;listBox&quot; style=&quot;display:none&quot;&gt;&lt;label&gt;Text (use &lt;b&gt;|&lt;/b&gt; to split into 2 lines)&lt;textarea id=&quot;list&quot; placeholder=&quot;KD001&amp;#10;Ram Kumar | Ajmer&amp;#10;...&quot;&gt;&lt;/textarea&gt;&lt;/label&gt;&lt;/div&gt;
+&lt;div id=&quot;listBox&quot; style=&quot;display:none&quot;&gt;&lt;label&gt;Text (use &lt;b&gt;|&lt;/b&gt; to split into 2 lines)&lt;textarea id=&quot;list&quot; placeholder=&quot;KD001&amp;#10;Ram Kumar | Ajmer&amp;#10;...&quot;&gt;&lt;/textarea&gt;&lt;/label&gt;&lt;label class=&quot;chk&quot;&gt;&lt;input id=&quot;fillrow&quot; type=&quot;checkbox&quot; checked&gt; Fill full row with each line (same text across the row)&lt;/label&gt;&lt;/div&gt;
 &lt;div class=&quot;g2&quot;&gt;&lt;label&gt;Skip first N stickers&lt;input id=&quot;skip&quot; type=&quot;number&quot; value=&quot;0&quot; min=&quot;0&quot;&gt;&lt;/label&gt;&lt;label&gt;Max font (pt)&lt;input id=&quot;maxpt&quot; type=&quot;number&quot; step=&quot;0.5&quot;&gt;&lt;/label&gt;&lt;/div&gt;
 &lt;label class=&quot;chk&quot;&gt;&lt;input id=&quot;uni&quot; type=&quot;checkbox&quot; checked&gt; Same font size on all stickers&lt;/label&gt;
 &lt;label class=&quot;chk&quot;&gt;&lt;input id=&quot;border&quot; type=&quot;checkbox&quot; checked&gt; Print borders (for test print only)&lt;/label&gt;
@@ -487,7 +490,10 @@ function items(){
   const n=c&gt;0?c:Math.max(0,S.cols*S.rows-skip);if(t||t2)for(let i=0;i&lt;n;i++)a.push([t,t2]);}
  else if($(&#x27;mode&#x27;).value===&#x27;auto&#x27;){const n=Math.max(0,parseInt($(&#x27;count&#x27;).value)||0),st=parseInt($(&#x27;start&#x27;).value)||0,d=parseInt($(&#x27;digits&#x27;).value)||0,l2=$(&#x27;line2&#x27;).value.trim();
   for(let i=0;i&lt;n;i++)a.push([$(&#x27;prefix&#x27;).value+String(st+i).padStart(d,&#x27;0&#x27;),l2]);}
- else a=$(&#x27;list&#x27;).value.split(&#x27;\n&#x27;).filter(l=&gt;l.trim()).map(l=&gt;{const p=l.split(&#x27;|&#x27;);return[p[0].trim(),(p[1]||&#x27;&#x27;).trim()]});
+ else{const L2=$(&#x27;list&#x27;).value.split(&#x27;\n&#x27;).filter(l=&gt;l.trim()).map(l=&gt;{const p=l.split(&#x27;|&#x27;);return[p[0].trim(),(p[1]||&#x27;&#x27;).trim()]});
+  if($(&#x27;fillrow&#x27;).checked){const c=Math.max(1,S.cols|0);a=Array(skip).fill(null);
+   L2.forEach(it=&gt;{const pad=(c-a.length%c)%c;a=a.concat(Array(pad).fill(null));for(let i=0;i&lt;c;i++)a.push(it)});return a}
+  a=L2}
  return Array(skip).fill(null).concat(a);
 }
 function size(it){if(!it)return 0;const ls=it.filter(Boolean);let s=S.maxpt;const aw=S.sw-2*S.pad;
