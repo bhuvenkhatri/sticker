@@ -91,7 +91,7 @@ button.p{background:var(--ac);color:#fff;border-color:var(--ac);font-weight:600}
 .prev{overflow-x:auto}svg{width:100%;max-width:520px;height:auto;display:block;margin:auto;background:#fff;border:1px solid var(--bd);box-shadow:0 2px 8px #0002}
 .note{font-size:12.5px;color:var(--mut);line-height:1.5}#msg{font-size:13px}
 details{margin-top:12px}summary{cursor:pointer;font-weight:600;font-size:14px}
-&lt;/style&gt;
+.lo{display:grid;grid-template-columns:1fr 92px auto;gap:8px;align-items:end;padding:7px 0;border-top:1px solid var(--bd)}.lo label{margin:0}.lo .chk{padding-bottom:9px;white-space:nowrap}.lo-t{font-weight:600;font-size:13px;word-break:break-word;align-self:center}.lo-h{font-size:13px;color:var(--mut);margin:6px 0 2px}&lt;/style&gt;
 &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js&quot;&gt;&lt;/script&gt;
 &lt;/head&gt;&lt;body&gt;&lt;div class=&quot;wrap&quot;&gt;
 &lt;div class=&quot;card&quot;&gt;
@@ -106,7 +106,7 @@ details{margin-top:12px}summary{cursor:pointer;font-weight:600;font-size:14px}
 &lt;div class=&quot;g2&quot;&gt;&lt;label&gt;Digits&lt;input id=&quot;digits&quot; type=&quot;number&quot; value=&quot;3&quot;&gt;&lt;/label&gt;&lt;label&gt;How many&lt;input id=&quot;count&quot; type=&quot;number&quot; value=&quot;65&quot;&gt;&lt;/label&gt;&lt;/div&gt;
 &lt;label&gt;Extra lines under the number (optional, up to 5, one per line)&lt;textarea id=&quot;line2&quot; style=&quot;min-height:70px&quot; placeholder=&quot;Shelf A&amp;#10;Row 2&quot;&gt;&lt;/textarea&gt;&lt;/label&gt;
 &lt;/div&gt;
-&lt;div id=&quot;listBox&quot; style=&quot;display:none&quot;&gt;&lt;label&gt;Text (use &lt;b&gt;|&lt;/b&gt; to split into up to 6 lines)&lt;textarea id=&quot;list&quot; placeholder=&quot;KD001&amp;#10;Ram Kumar | Ajmer&amp;#10;...&quot;&gt;&lt;/textarea&gt;&lt;/label&gt;&lt;label class=&quot;chk&quot;&gt;&lt;input id=&quot;fillrow&quot; type=&quot;checkbox&quot; checked&gt; Fill full row with each line (same text across the row)&lt;/label&gt;&lt;/div&gt;
+&lt;div id=&quot;listBox&quot; style=&quot;display:none&quot;&gt;&lt;label&gt;Text (use &lt;b&gt;|&lt;/b&gt; to split into up to 6 lines)&lt;textarea id=&quot;list&quot; placeholder=&quot;KD001&amp;#10;Ram Kumar | Ajmer&amp;#10;...&quot;&gt;&lt;/textarea&gt;&lt;/label&gt;&lt;div id=&quot;lineOpts&quot;&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;div class=&quot;g2&quot;&gt;&lt;label&gt;Skip first N stickers&lt;input id=&quot;skip&quot; type=&quot;number&quot; value=&quot;0&quot; min=&quot;0&quot;&gt;&lt;/label&gt;&lt;label&gt;Max font (pt)&lt;input id=&quot;maxpt&quot; type=&quot;number&quot; step=&quot;0.5&quot;&gt;&lt;/label&gt;&lt;/div&gt;
 &lt;label class=&quot;chk&quot;&gt;&lt;input id=&quot;uni&quot; type=&quot;checkbox&quot; checked&gt; Same font size on all stickers&lt;/label&gt;
 &lt;label class=&quot;chk&quot;&gt;&lt;input id=&quot;border&quot; type=&quot;checkbox&quot; checked&gt; Print borders (for test print only)&lt;/label&gt;
@@ -142,10 +142,10 @@ function items(){
   const n=c&gt;0?c:Math.max(0,S.cols*S.rows-skip);if(ls.length)for(let i=0;i&lt;n;i++)a.push(ls);}
  else if($(&#x27;mode&#x27;).value===&#x27;auto&#x27;){const n=Math.max(0,parseInt($(&#x27;count&#x27;).value)||0),st=parseInt($(&#x27;start&#x27;).value)||0,d=parseInt($(&#x27;digits&#x27;).value)||0,l2=$(&#x27;line2&#x27;).value.split(&#x27;\n&#x27;).map(x=&gt;x.trim()).filter(Boolean).slice(0,5);
   for(let i=0;i&lt;n;i++)a.push([$(&#x27;prefix&#x27;).value+String(st+i).padStart(d,&#x27;0&#x27;),...l2]);}
- else{const L2=$(&#x27;list&#x27;).value.split(&#x27;\n&#x27;).map(l=&gt;l.split(&#x27;|&#x27;).map(x=&gt;x.trim()).filter(Boolean).slice(0,6)).filter(x=&gt;x.length);
-  if($(&#x27;fillrow&#x27;).checked){const c=Math.max(1,S.cols|0);a=Array(skip).fill(null);
-   L2.forEach(it=&gt;{const pad=(c-a.length%c)%c;a=a.concat(Array(pad).fill(null));for(let i=0;i&lt;c;i++)a.push(it)});return a}
-  a=L2}
+ else{const L2=parseList(),c=Math.max(1,S.cols|0);a=Array(skip).fill(null);
+  L2.forEach((it,i)=&gt;{const o=LO[i]||{},n=(o.n===&#x27;&#x27;||o.n==null)?c:Math.max(0,parseInt(o.n)||0);
+   if(o.nr!==false&amp;&amp;a.length%c)a=a.concat(Array(c-a.length%c).fill(null));
+   for(let k=0;k&lt;n;k++)a.push(it)});return a}
  return Array(skip).fill(null).concat(a);
 }
 function size(it){if(!it)return 0;const ls=it.filter(Boolean);let s=S.maxpt;const aw=S.sw-2*S.pad;
@@ -156,6 +156,16 @@ function layout(){const a=items(),per=S.cols*S.rows;let sz=a.map(size);
  return{a,sz,per,pages:Math.max(1,Math.ceil(a.length/per))}}
 function lines(it,s,y){const ls=it.filter(Boolean),cap=K*s,cy=y+S.sh/2,d=1.55*cap,n=ls.length;return ls.map((t,i)=&gt;[t,cy+(i-(n-1)/2)*d+cap/2])}
 const esc=t=&gt;t.replace(/&amp;/g,&#x27;&amp;amp;&#x27;).replace(/&lt;/g,&#x27;&amp;lt;&#x27;);
+
+const LO=[];
+function parseList(){return $(&#x27;list&#x27;).value.split(&#x27;\n&#x27;).map(l=&gt;l.split(&#x27;|&#x27;).map(x=&gt;x.trim()).filter(Boolean).slice(0,6)).filter(x=&gt;x.length)}
+function drawOpts(){const L2=parseList(),box=$(&#x27;lineOpts&#x27;);
+ if(!L2.length){box.innerHTML=&#x27;&#x27;;return}
+ box.innerHTML=&#x27;&lt;div class=&quot;lo-h&quot;&gt;Set for each line: how many stickers, and whether it starts on a new row&lt;/div&gt;&#x27;+L2.map((it,i)=&gt;{const o=LO[i]||(LO[i]={n:&#x27;&#x27;,nr:true});
+  return `&lt;div class=&quot;lo&quot;&gt;&lt;span class=&quot;lo-t&quot;&gt;${i+1}. ${esc(it.filter(Boolean).join(&#x27; | &#x27;))}&lt;/span&gt;&lt;label&gt;How many&lt;input type=&quot;number&quot; min=&quot;0&quot; data-i=&quot;${i}&quot; data-k=&quot;n&quot; value=&quot;${o.n}&quot; placeholder=&quot;${S.cols} (row)&quot;&gt;&lt;/label&gt;&lt;label class=&quot;chk&quot;&gt;&lt;input type=&quot;checkbox&quot; data-i=&quot;${i}&quot; data-k=&quot;nr&quot; ${o.nr?&#x27;checked&#x27;:&#x27;&#x27;}&gt; New row&lt;/label&gt;&lt;/div&gt;`}).join(&#x27;&#x27;)}
+$(&#x27;lineOpts&#x27;).addEventListener(&#x27;input&#x27;,e=&gt;{const t=e.target,i=+t.dataset.i;if(isNaN(i))return;const o=LO[i]||(LO[i]={n:&#x27;&#x27;,nr:true});
+ if(t.dataset.k===&#x27;nr&#x27;)o.nr=t.checked;else o.n=t.value;render()});
+$(&#x27;list&#x27;).addEventListener(&#x27;input&#x27;,drawOpts);
 function render(){read();const L=layout();page=Math.min(page,L.pages-1);
  let o=`&lt;svg viewBox=&quot;0 0 210 297&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;`;
  for(let j=0;j&lt;L.per;j++){const i=page*L.per+j;if(i&gt;=L.a.length)break;const it=L.a[i];if(!it)continue;const[x,y]=pos(j);
@@ -179,10 +189,10 @@ $(&#x27;dl&#x27;).onclick=async()=&gt;{read();const L=layout();if(!jp)return;
  if(!dl){try{const u=URL.createObjectURL(d.output(&#x27;blob&#x27;)),a=document.createElement(&#x27;a&#x27;);a.href=u;a.download=&#x27;stickers.pdf&#x27;;document.body.appendChild(a);a.click();a.remove();msg.textContent=&#x27;Saved.&#x27;}catch(e){msg.textContent=&#x27;Could not save.&#x27;}return}
  try{await dl.save({filename:&#x27;stickers.pdf&#x27;,data:d.output(&#x27;blob&#x27;)});msg.textContent=&#x27;Saved.&#x27;}catch(e){msg.textContent=e&amp;&amp;e.code===&#x27;declined&#x27;?&#x27;Cancelled.&#x27;:&#x27;Could not save (&#x27;+(e&amp;&amp;e.code||&#x27;error&#x27;)+&#x27;).&#x27;}};
 $(&#x27;pp&#x27;).onclick=()=&gt;{page--;render()};$(&#x27;pn&#x27;).onclick=()=&gt;{page++;render()};
-$(&#x27;mode&#x27;).onchange=()=&gt;{$(&#x27;sameBox&#x27;).style.display=$(&#x27;mode&#x27;).value===&#x27;same&#x27;?&#x27;&#x27;:&#x27;none&#x27;;$(&#x27;autoBox&#x27;).style.display=$(&#x27;mode&#x27;).value===&#x27;auto&#x27;?&#x27;&#x27;:&#x27;none&#x27;;$(&#x27;listBox&#x27;).style.display=$(&#x27;mode&#x27;).value===&#x27;list&#x27;?&#x27;&#x27;:&#x27;none&#x27;;page=0;render()};
+$(&#x27;mode&#x27;).onchange=()=&gt;{$(&#x27;sameBox&#x27;).style.display=$(&#x27;mode&#x27;).value===&#x27;same&#x27;?&#x27;&#x27;:&#x27;none&#x27;;$(&#x27;autoBox&#x27;).style.display=$(&#x27;mode&#x27;).value===&#x27;auto&#x27;?&#x27;&#x27;:&#x27;none&#x27;;$(&#x27;listBox&#x27;).style.display=$(&#x27;mode&#x27;).value===&#x27;list&#x27;?&#x27;&#x27;:&#x27;none&#x27;;page=0;drawOpts();render()};
 $(&#x27;reset&#x27;).onclick=()=&gt;{S=Object.assign({},D);load();render()};
 document.querySelectorAll(&#x27;input,textarea&#x27;).forEach(e=&gt;e.addEventListener(&#x27;input&#x27;,render));
-render();
+drawOpts();render();
 &lt;/script&gt;&lt;/body&gt;&lt;/html&gt;
 "></iframe>
     <iframe id="f1" title="65 Sticker Pack Including Barcode" data-doc="&lt;!doctype html&gt;
@@ -438,7 +448,7 @@ button.p{background:var(--ac);color:#fff;border-color:var(--ac);font-weight:600}
 .prev{overflow-x:auto}svg{width:100%;max-width:520px;height:auto;display:block;margin:auto;background:#fff;border:1px solid var(--bd);box-shadow:0 2px 8px #0002}
 .note{font-size:12.5px;color:var(--mut);line-height:1.5}#msg{font-size:13px}
 details{margin-top:12px}summary{cursor:pointer;font-weight:600;font-size:14px}
-&lt;/style&gt;
+.lo{display:grid;grid-template-columns:1fr 92px auto;gap:8px;align-items:end;padding:7px 0;border-top:1px solid var(--bd)}.lo label{margin:0}.lo .chk{padding-bottom:9px;white-space:nowrap}.lo-t{font-weight:600;font-size:13px;word-break:break-word;align-self:center}.lo-h{font-size:13px;color:var(--mut);margin:6px 0 2px}&lt;/style&gt;
 &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js&quot;&gt;&lt;/script&gt;
 &lt;/head&gt;&lt;body&gt;&lt;div class=&quot;wrap&quot;&gt;
 &lt;div class=&quot;card&quot;&gt;
@@ -454,7 +464,7 @@ details{margin-top:12px}summary{cursor:pointer;font-weight:600;font-size:14px}
 &lt;div class=&quot;g2&quot;&gt;&lt;label&gt;Digits&lt;input id=&quot;digits&quot; type=&quot;number&quot; value=&quot;3&quot;&gt;&lt;/label&gt;&lt;label&gt;How many&lt;input id=&quot;count&quot; type=&quot;number&quot; value=&quot;84&quot;&gt;&lt;/label&gt;&lt;/div&gt;
 &lt;label&gt;Line 2 (optional, same on all)&lt;input id=&quot;line2&quot; placeholder=&quot;e.g. Shelf A&quot;&gt;&lt;/label&gt;
 &lt;/div&gt;
-&lt;div id=&quot;listBox&quot; style=&quot;display:none&quot;&gt;&lt;label&gt;Text (use &lt;b&gt;|&lt;/b&gt; to split into 2 lines)&lt;textarea id=&quot;list&quot; placeholder=&quot;KD001&amp;#10;Ram Kumar | Ajmer&amp;#10;...&quot;&gt;&lt;/textarea&gt;&lt;/label&gt;&lt;label class=&quot;chk&quot;&gt;&lt;input id=&quot;fillrow&quot; type=&quot;checkbox&quot; checked&gt; Fill full row with each line (same text across the row)&lt;/label&gt;&lt;/div&gt;
+&lt;div id=&quot;listBox&quot; style=&quot;display:none&quot;&gt;&lt;label&gt;Text (use &lt;b&gt;|&lt;/b&gt; to split into 2 lines)&lt;textarea id=&quot;list&quot; placeholder=&quot;KD001&amp;#10;Ram Kumar | Ajmer&amp;#10;...&quot;&gt;&lt;/textarea&gt;&lt;/label&gt;&lt;div id=&quot;lineOpts&quot;&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;div class=&quot;g2&quot;&gt;&lt;label&gt;Skip first N stickers&lt;input id=&quot;skip&quot; type=&quot;number&quot; value=&quot;0&quot; min=&quot;0&quot;&gt;&lt;/label&gt;&lt;label&gt;Max font (pt)&lt;input id=&quot;maxpt&quot; type=&quot;number&quot; step=&quot;0.5&quot;&gt;&lt;/label&gt;&lt;/div&gt;
 &lt;label class=&quot;chk&quot;&gt;&lt;input id=&quot;uni&quot; type=&quot;checkbox&quot; checked&gt; Same font size on all stickers&lt;/label&gt;
 &lt;label class=&quot;chk&quot;&gt;&lt;input id=&quot;border&quot; type=&quot;checkbox&quot; checked&gt; Print borders (for test print only)&lt;/label&gt;
@@ -490,10 +500,10 @@ function items(){
   const n=c&gt;0?c:Math.max(0,S.cols*S.rows-skip);if(t||t2)for(let i=0;i&lt;n;i++)a.push([t,t2]);}
  else if($(&#x27;mode&#x27;).value===&#x27;auto&#x27;){const n=Math.max(0,parseInt($(&#x27;count&#x27;).value)||0),st=parseInt($(&#x27;start&#x27;).value)||0,d=parseInt($(&#x27;digits&#x27;).value)||0,l2=$(&#x27;line2&#x27;).value.trim();
   for(let i=0;i&lt;n;i++)a.push([$(&#x27;prefix&#x27;).value+String(st+i).padStart(d,&#x27;0&#x27;),l2]);}
- else{const L2=$(&#x27;list&#x27;).value.split(&#x27;\n&#x27;).filter(l=&gt;l.trim()).map(l=&gt;{const p=l.split(&#x27;|&#x27;);return[p[0].trim(),(p[1]||&#x27;&#x27;).trim()]});
-  if($(&#x27;fillrow&#x27;).checked){const c=Math.max(1,S.cols|0);a=Array(skip).fill(null);
-   L2.forEach(it=&gt;{const pad=(c-a.length%c)%c;a=a.concat(Array(pad).fill(null));for(let i=0;i&lt;c;i++)a.push(it)});return a}
-  a=L2}
+ else{const L2=parseList(),c=Math.max(1,S.cols|0);a=Array(skip).fill(null);
+  L2.forEach((it,i)=&gt;{const o=LO[i]||{},n=(o.n===&#x27;&#x27;||o.n==null)?c:Math.max(0,parseInt(o.n)||0);
+   if(o.nr!==false&amp;&amp;a.length%c)a=a.concat(Array(c-a.length%c).fill(null));
+   for(let k=0;k&lt;n;k++)a.push(it)});return a}
  return Array(skip).fill(null).concat(a);
 }
 function size(it){if(!it)return 0;const ls=it.filter(Boolean);let s=S.maxpt;const aw=S.sw-2*S.pad;
@@ -505,6 +515,16 @@ function layout(){const a=items(),per=S.cols*S.rows;let sz=a.map(size);
 function lines(it,s,y){const ls=it.filter(Boolean),cap=K*s,cy=y+S.sh/2;
  if(ls.length==2){const d=1.55*cap;return[[ls[0],cy-d/2+cap/2],[ls[1],cy+d/2+cap/2]]}return[[ls[0]||&#x27;&#x27;,cy+cap/2]]}
 const esc=t=&gt;t.replace(/&amp;/g,&#x27;&amp;amp;&#x27;).replace(/&lt;/g,&#x27;&amp;lt;&#x27;);
+
+const LO=[];
+function parseList(){return $(&#x27;list&#x27;).value.split(&#x27;\n&#x27;).filter(l=&gt;l.trim()).map(l=&gt;{const p=l.split(&#x27;|&#x27;);return[p[0].trim(),(p[1]||&#x27;&#x27;).trim()]})}
+function drawOpts(){const L2=parseList(),box=$(&#x27;lineOpts&#x27;);
+ if(!L2.length){box.innerHTML=&#x27;&#x27;;return}
+ box.innerHTML=&#x27;&lt;div class=&quot;lo-h&quot;&gt;Set for each line: how many stickers, and whether it starts on a new row&lt;/div&gt;&#x27;+L2.map((it,i)=&gt;{const o=LO[i]||(LO[i]={n:&#x27;&#x27;,nr:true});
+  return `&lt;div class=&quot;lo&quot;&gt;&lt;span class=&quot;lo-t&quot;&gt;${i+1}. ${esc(it.filter(Boolean).join(&#x27; | &#x27;))}&lt;/span&gt;&lt;label&gt;How many&lt;input type=&quot;number&quot; min=&quot;0&quot; data-i=&quot;${i}&quot; data-k=&quot;n&quot; value=&quot;${o.n}&quot; placeholder=&quot;${S.cols} (row)&quot;&gt;&lt;/label&gt;&lt;label class=&quot;chk&quot;&gt;&lt;input type=&quot;checkbox&quot; data-i=&quot;${i}&quot; data-k=&quot;nr&quot; ${o.nr?&#x27;checked&#x27;:&#x27;&#x27;}&gt; New row&lt;/label&gt;&lt;/div&gt;`}).join(&#x27;&#x27;)}
+$(&#x27;lineOpts&#x27;).addEventListener(&#x27;input&#x27;,e=&gt;{const t=e.target,i=+t.dataset.i;if(isNaN(i))return;const o=LO[i]||(LO[i]={n:&#x27;&#x27;,nr:true});
+ if(t.dataset.k===&#x27;nr&#x27;)o.nr=t.checked;else o.n=t.value;render()});
+$(&#x27;list&#x27;).addEventListener(&#x27;input&#x27;,drawOpts);
 function render(){read();const L=layout();page=Math.min(page,L.pages-1);
  let o=`&lt;svg viewBox=&quot;0 0 210 297&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;`;
  for(let j=0;j&lt;L.per;j++){const i=page*L.per+j;if(i&gt;=L.a.length)break;const it=L.a[i];if(!it)continue;const[x,y]=pos(j);
@@ -528,10 +548,10 @@ $(&#x27;dl&#x27;).onclick=async()=&gt;{read();const L=layout();if(!jp)return;
  if(!dl){try{const u=URL.createObjectURL(d.output(&#x27;blob&#x27;)),a=document.createElement(&#x27;a&#x27;);a.href=u;a.download=&#x27;stickers.pdf&#x27;;document.body.appendChild(a);a.click();a.remove();msg.textContent=&#x27;Saved.&#x27;}catch(e){msg.textContent=&#x27;Could not save.&#x27;}return}
  try{await dl.save({filename:&#x27;stickers.pdf&#x27;,data:d.output(&#x27;blob&#x27;)});msg.textContent=&#x27;Saved.&#x27;}catch(e){msg.textContent=e&amp;&amp;e.code===&#x27;declined&#x27;?&#x27;Cancelled.&#x27;:&#x27;Could not save (&#x27;+(e&amp;&amp;e.code||&#x27;error&#x27;)+&#x27;).&#x27;}};
 $(&#x27;pp&#x27;).onclick=()=&gt;{page--;render()};$(&#x27;pn&#x27;).onclick=()=&gt;{page++;render()};
-$(&#x27;mode&#x27;).onchange=()=&gt;{$(&#x27;sameBox&#x27;).style.display=$(&#x27;mode&#x27;).value===&#x27;same&#x27;?&#x27;&#x27;:&#x27;none&#x27;;$(&#x27;autoBox&#x27;).style.display=$(&#x27;mode&#x27;).value===&#x27;auto&#x27;?&#x27;&#x27;:&#x27;none&#x27;;$(&#x27;listBox&#x27;).style.display=$(&#x27;mode&#x27;).value===&#x27;list&#x27;?&#x27;&#x27;:&#x27;none&#x27;;page=0;render()};
+$(&#x27;mode&#x27;).onchange=()=&gt;{$(&#x27;sameBox&#x27;).style.display=$(&#x27;mode&#x27;).value===&#x27;same&#x27;?&#x27;&#x27;:&#x27;none&#x27;;$(&#x27;autoBox&#x27;).style.display=$(&#x27;mode&#x27;).value===&#x27;auto&#x27;?&#x27;&#x27;:&#x27;none&#x27;;$(&#x27;listBox&#x27;).style.display=$(&#x27;mode&#x27;).value===&#x27;list&#x27;?&#x27;&#x27;:&#x27;none&#x27;;page=0;drawOpts();render()};
 $(&#x27;reset&#x27;).onclick=()=&gt;{S=Object.assign({},D);load();render()};
 document.querySelectorAll(&#x27;input,textarea&#x27;).forEach(e=&gt;e.addEventListener(&#x27;input&#x27;,render));
-render();
+drawOpts();render();
 &lt;/script&gt;&lt;/body&gt;&lt;/html&gt;
 "></iframe>
 
